@@ -1,4 +1,4 @@
-# from rplidar import RPLidar
+from rplidar import RPLidar
 from math import sin,cos,radians,sqrt
 import cv2
 
@@ -6,15 +6,15 @@ import cv2
 # data=lidar.iter_scans()
 
 import json # Use dummy data for no lidar
-with open('dummydata.json','r') as f:
+with open('datastills.json','r') as f:
     data=json.load(f)
 
 def make_point(bearing,distance):
     """Bearing is the bearing of the lidar reading in degrees, distance is the distance in mm.\nReturns an (x,y) point."""
     bearing=radians(bearing)
 
-    x=int((sin(bearing)*distance))
-    y=int(-1*((cos(bearing)*distance)))
+    x=int((sin(bearing)*distance)/4)+500
+    y=int(-1*((cos(bearing)*distance))/4)+500
     
     return Point(x,y)
 
@@ -47,7 +47,19 @@ class Line(): # Series of points with similar x or y values
     def __str__(self):
         return str(self.points)
 
+    def add_point(self,point):
+        if abs(point.x-self.points[0].x)>abs(point.y-self.points[0].y):
+            self.direction='h'
+        else:
+            self.direction='v'
+        self.points.append(point)
+
     def draw_self(self,img):
+        if self.direction=='v' and self.points[len(self.points)-1].x-self.points[0].x>20:
+            return img
+        elif self.direction=='h' and self.points[len(self.points)-1].y-self.points[0].y>20:
+            return img
+
         if self.direction=='h':
             colour=(255,0,0)
         else:
@@ -69,17 +81,28 @@ class Shape(): # Cloud of nearby points for analysis
         _prev=None
         for _point in self.points:
             if _prev:
-                if abs(_point.x-_prev.x)<=10:
+                if line:
+                    if line.direction=='v':
+                        if abs(_point.x-_prev.x)<=5:
+                            line.add_point(_point)
+                            # line.points.append(_point)
+                    elif line.direction=='h':
+                        if abs(_point.y-_prev.y)<=5:
+                            line.add_point(_point)
+                            # line.points.append(_point)
+                elif abs(_point.x-_prev.x)<=5:
                     if line and line.direction=='v':
-                        line.points.append(_point)
+                        line.add_point(_point)
+                        # line.points.append(_point)
                     elif line:
                         _lines.append(line)
                         line=Line('v',[_prev,_point])
                     else:
                         line=Line('v',[_prev,_point])
-                elif abs(_point.y-_prev.y)<=10:
+                elif abs(_point.y-_prev.y)<=5:
                     if line and line.direction=='h':
-                        line.points.append(_point)
+                        line.add_point(_point)
+                        # line.points.append(_point)
                     elif line:
                         _lines.append(line)
                         line=Line('h',[_prev,_point])
@@ -100,14 +123,14 @@ max_dist=50 # Max distance to consider 2 points of the same object
 go=True
 while go:
     prev=make_point(0,0)
-    for i,scan in enumerate(data):
+    for scan in data:
         base=cv2.imread('base.png')
         shapes=[]
         shape=None
         for reading in scan:
 
             point=make_point(reading[1],reading[2]).point
-            r_point=make_point(reading[1]-i,reading[2])
+            r_point=make_point(reading[1],reading[2])
             r_point.alt=point
 
             cv2.circle(base,point,2,colour,2)
