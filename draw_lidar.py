@@ -6,7 +6,7 @@ lidar=RPLidar('COM3')
 data=lidar.iter_scans()
 
 # import json # Use dummy data for no lidar
-# with open('data.json','r') as f:
+# with open('data/dummydata.json','r') as f:
 #     data=json.load(f)
 
 def make_point(bearing,distance):
@@ -88,7 +88,7 @@ angle=-2 # The angle by which the points will be rotated around the origin. In a
 go=True
 while go:
     for scan in data:
-        base=cv2.imread('base.png')
+        base=cv2.imread('data/base.png')
         m=Map()
         for reading in scan:
             point=make_point(reading[1]+angle,reading[2])
