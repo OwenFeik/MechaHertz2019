@@ -6,11 +6,14 @@ float heading; // Current bearing relative to T
 int btn_val; // Digital output of the button
 int btn_pin = 22; // Pin the button is wired to
 bool go = false; // Stop/go toggled by the button
+Compass *compass;
 
 void setup() {
     Serial.begin(115200);
-    setupCompass(); // Initialise commmunication
-    initial_heading=getAccurateHeading(); // Use an accurate reading for baseline
+
+    compass = new Compass();
+    initial_heading=compass->getAccurateHeading(); // Use an accurate reading for baseline
+    
     pinMode(btn_pin,INPUT); // Set up the button
 }
 
@@ -22,9 +25,9 @@ void loop() {
     }
 
     if (go){
-        heading=getHeading(); // Function that updates the heading
-        Serial.print("Relative heading: ");
-        Serial.println(initial_heading-heading);
+        heading=compass->getHeading(); // Function that updates the heading
+        Serial.print("Heading: ");
+        Serial.println(heading);
     }
 }
 

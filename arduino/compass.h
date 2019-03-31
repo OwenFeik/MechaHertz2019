@@ -1,16 +1,28 @@
 #include <Wire.h> // Library to interface with the magnetometer
 
-//Open communication with compass
-void setupCompass(){
-    Wire.begin();
-    Wire.beginTransmission(0x1E); // Set up the magnetometer
-    Wire.write(0x02);
-    Wire.write(0x00);
-    Wire.endTransmission();
-}
+class Compass
+{
+    private:
+        float x_offset;
+        float y_offset;
+    
+    public:
+    
+    Compass(){
+        Wire.begin();
+        Wire.beginTransmission(0x1E); // Set up the magnetometer
+        Wire.write(0x02);
+        Wire.write(0x00);
+        Wire.endTransmission();
+    }
+
+    float getHeading();
+    float getAccurateHeading();
+};
+
 
 // Get current bearing of compass relative to T
-float getHeading(){  
+float Compass::getHeading(){  
     Wire.beginTransmission(0x1E);
     Wire.write(0x03); //select register 3, X MSB register
     Wire.endTransmission();
@@ -38,7 +50,7 @@ float getHeading(){
 }
 
 // Return the average of 10 compass readings
-float getAccurateHeading(){
+float Compass::getAccurateHeading(){
     float heading_sum=0;
     for(int i=0; i<10; i++){
         heading_sum+=getHeading();
