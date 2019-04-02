@@ -1,4 +1,5 @@
 #include "compass.h"
+#include "drive.h"
 
 float initial_heading; // Bearing relative to T bot faced initially
 float heading; // Current bearing relative to T
@@ -9,6 +10,7 @@ bool go = false; // Stop/go toggled by the button
 Compass *compass;
 
 void setup() {
+    Drive drive(1,2,3);
     Serial.begin(115200);
 
     compass = new Compass();
