@@ -17,7 +17,7 @@ camera.framerate=90
 raw_capture=PiRGBArray(camera,size=(640,480))
 
 # # To use video file:
-# vs=cv2.VideoCapture('path/to/file.mp4')
+# vs=cv2.VideoCapture('path/to/test.mp4')
 # # To use web cam:
 # vs=cv2.VideoCapture(0)
 
@@ -57,7 +57,7 @@ for image in camera.capture_continuous(raw_capture,format="bgr",use_video_port=T
         ball_area=moments['m00'] # m00 is the sum of pixel intensities; in a binary image, this is the area
         if moments:
             if moments['m00']<=0: ball_center=int(moments['m10']),int(moments['m01']) # If m00 is 0, we don't want to divide by 0
-            else: ball_center = int(moments['m10']/moments['m00']),int(moments['m01']/moments['m00']) # (m10/m00,m01/m00)=(x,y) of image's center of mass
+            else: ball_center=int(moments['m10']/moments['m00']),int(moments['m01']/moments['m00']) # (m10/m00,m01/m00)=(x,y) of image's 'center of mass'
 
             # ball_center_hsv=hsv.get()[ball_center[1]][ball_center[0]] # When using hardware acceleration, need to .get() the Mat image
             ball_center_hsv=hsv[ball_center[1]][ball_center[0]] # When not using hardware acceleration, raw image is available
@@ -70,7 +70,8 @@ for image in camera.capture_continuous(raw_capture,format="bgr",use_video_port=T
         time=perf_counter()
         fps=(5/(time-prev_time))
         prev_time=time
-        print(f'FPS: {fps} AVG: {sum(fps_readings)/len(fps_readings)}')
+        if fps_readings:
+            print(f'FPS: {fps} AVG: {sum(fps_readings)/len(fps_readings)}')
         fps_readings.append(fps)
     frame_count+=1
 
@@ -80,7 +81,7 @@ for image in camera.capture_continuous(raw_capture,format="bgr",use_video_port=T
     else:
         print('not found')
         
-    raw_capture.truncate(0) # Discard used frame.
+    # raw_capture.truncate(0) # Discard used frame, necessary when using PiCamera
 
     # # For debug, show frame.
     # cv2.imshow('frame',rgb)
