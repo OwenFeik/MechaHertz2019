@@ -5,6 +5,7 @@ class Compass{
         float x_offset,y_offset;
         int x,y,z;
         float heading;
+        float initial_heading;
 
     Compass();
     void calibrateSelf();

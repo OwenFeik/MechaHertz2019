@@ -1,21 +1,20 @@
 #include "compass.h"
 #include "drive.h"
-
-float initial_heading; // Bearing relative to T bot faced initially
-float heading; // Current bearing relative to T
+#include "pixy.h"
 
 int btn_val; // Digital output of the button
 int btn_pin = 22; // Pin the button is wired to
 bool go = false; // Stop/go toggled by the button
+
 Compass *compass;
+Pixy *pixy;
 
 void setup() {
-    Drive drive(1,2,3);
     Serial.begin(115200);
 
-    compass = new Compass();
-    initial_heading=compass->getAccurateHeading(); // Use an accurate reading for baseline
-    
+    compass=new Compass(); 
+    pixy=new Pixy();
+
     pinMode(btn_pin,INPUT); // Set up the button
 }
 
@@ -27,9 +26,17 @@ void loop() {
     }
 
     if (go){
-        heading=compass->getHeading(); // Function that updates the heading
-        Serial.print("Heading: ");
-        Serial.println(heading);
+        pixy->update();
+        if (pixy->visible){
+            Serial.print("X: ");
+            Serial.print(pixy->x);
+            Serial.print(" Y: ");
+            Serial.print(pixy->y);
+        }
+
+        compass->getHeading(); // Function that updates the heading
+        Serial.print(" H: ");
+        Serial.println(compass->heading);
     }
 }
 

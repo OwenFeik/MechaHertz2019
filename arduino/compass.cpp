@@ -8,6 +8,8 @@ Compass::Compass(){
     Wire.write(0x02);
     Wire.write(0x00);
     Wire.endTransmission();
+
+    this->initial_heading=this->getAccurateHeading();
 }
 
 // Calculate the x and y offset of the compass (doesn't work atm)
