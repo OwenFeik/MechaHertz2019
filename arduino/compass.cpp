@@ -9,24 +9,27 @@ Compass::Compass(){
     Wire.write(0x00);
     Wire.endTransmission();
 
-    this->initial_heading=this->getAccurateHeading();
+    this->initial_heading = this->getAccurateHeading();
 }
 
 // Calculate the x and y offset of the compass (doesn't work atm)
 void Compass::calibrateSelf(){
-    int min_x=this->x,min_y=this->y,max_x=this->x,max_y=this->y;
+    int min_x = this->x;
+    int min_y = this->y;
+    int max_x = this->x; 
+    int max_y = this->y;
 
-    for (int i=0;i<100;i++){
+    for (int i = 0; i < 100; i++){
         this->updateXYZ();
-        if (this->x>max_x){max_x=this->x;}
-        if (this->y>max_y){max_y=this->y;}
-        if (this->x<min_x){min_x=this->x;}
-        if (this->y<min_x){min_x=this->y;}
+        if (this->x > max_x){max_x = this->x;}
+        if (this->y > max_y){max_y = this->y;}
+        if (this->x < min_x){min_x = this->x;}
+        if (this->y < min_x){min_x = this->y;}
         delay(100);
     }
 
-    this->x_offset=(min_x+max_x)/2;
-    this->y_offset=(min_y+max_y)/2;
+    this->x_offset = (min_x + max_x)/2;
+    this->y_offset = (min_y + max_y)/2;
 
     Serial.println(x_offset);
     Serial.println(y_offset);
@@ -39,7 +42,7 @@ void Compass::updateXYZ(){
     Wire.endTransmission();
 
     Wire.requestFrom(0x1E, 6);
-    if(6<=Wire.available()){
+    if(6 <= Wire.available()){
         this->x = (Wire.read()<<8 | Wire.read());
         this->z = Wire.read()<<8 | Wire.read();
         this->y = (Wire.read()<<8 | Wire.read());
@@ -53,11 +56,11 @@ float Compass::getHeading(){
 
     float heading;
 
-    heading=atan2(this->x, this->y)/0.0174532925;
-    if (heading<0){
-        heading+=360;
+    heading = atan2(this->x, this->y)/0.0174532925;
+    if (heading < 0){
+        heading += 360;
     }
-    this->heading=abs(heading-360);
+    this->heading = abs(heading - 360);
 
     return this->heading;
 }
@@ -66,9 +69,9 @@ float Compass::getHeading(){
 float Compass::getAccurateHeading(){
     float heading_sum=0;
     for(int i=0; i<10; i++){
-        heading_sum+=getHeading();
+        heading_sum += getHeading();
     }
-    this->heading=heading_sum/10;
+    this->heading = heading_sum/10;
 
     return this->heading;
 }
