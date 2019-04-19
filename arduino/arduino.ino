@@ -20,14 +20,14 @@ void setup() {
 
 void loop() {
     btn_val = digitalRead(btn_pin); // Output of the button
-    if (btn_val == LOW){ // Button outputs digital LOW when pressed
+    if (btn_val == LOW) { // Button outputs digital LOW when pressed
         go = !go;
         delay(500); // Delay to allow person to remove finger from button
     }
 
-    if (go){
+    if (go) {
         pixy->update();
-        if (pixy->visible){
+        if (pixy->visible) {
             Serial.print("X: ");
             Serial.print(pixy->x);
             Serial.print(" Y: ");

@@ -1,4 +1,4 @@
-#include <Pixy2.h>
+#include <Pixy2.h> // Library from PixyCam manufacturer
 
 class Pixy{
     public:

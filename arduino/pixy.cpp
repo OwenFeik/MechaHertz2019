@@ -1,15 +1,21 @@
 #include "pixy.h"
 #include <Arduino.h> // 'map' function
 
-void Pixy::update(){
+Pixy::Pixy() {
+    this->pixy.init(); // Needed to start up the PixyCam
+    this->visible = false; // Start the ball as unseen
+}
+
+void Pixy::update() {
     this->pixy.ccc.getBlocks();
 
-    if (this->pixy.ccc.numBlocks){
+    if (this->pixy.ccc.numBlocks) {
         int x = this->pixy.ccc.blocks[0].m_x; // Raw x value is between 0 and 316
         int y = this->pixy.ccc.blocks[0].m_y; // Y is in [0,208]
 
-        int heading = atan2(x, y)/0.0174532925; // 0.017 = pi/180, conversion from radians
-        if (heading < 0){
+        // Robot is the origin, so subtract half of the frame size from x and y
+        int heading = atan2(x - 158, y - 104)/0.0174532925; // 0.017 = pi/180, conversion from radians
+        if (heading < 0) {
             heading += 360; // Change from -180,180 to 0,360
         }
         heading = abs(heading - 360);
@@ -26,9 +32,4 @@ void Pixy::update(){
     else {
         this->visible = false; // If it didn't output blocks, we didn't see the ball
     }
-}
-
-Pixy::Pixy(){
-    this->pixy.init(); // Needed to start up the PixyCam
-    this->visible = false; // Start the ball as unseen
 }
