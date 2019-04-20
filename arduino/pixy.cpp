@@ -20,6 +20,11 @@ void Pixy::update() {
         }
         heading = abs(heading - 360);
         
+        bool in_front = false;
+        if ((heading >= 0 && heading <= 30) || (heading <= 360 && heading >= 330)) {
+            in_front = true;
+        }
+
         this->x = map(x, 0, 316, 0, 100); // Remap to percentage
         this->y = map(y, 0, 208, 0, 100); // Remap to percentage
         this->width = map(this->pixy.ccc.blocks[0].m_width, 1, 316, 1, 100); // Scale to percentage
@@ -28,6 +33,7 @@ void Pixy::update() {
         this->heading = heading; // Bearing of the ball from the bot
         this->dist = sqrt(pow(x, 2) + pow(y, 2)); // Pythagorean distance
         this->visible = true; // If the pixy outputs blocks, we are seeing the ball
+        this->in_front = in_front; // Is the ball in a 60 degree cone ahead of us?
     }
     else {
         this->visible = false; // If it didn't output blocks, we didn't see the ball

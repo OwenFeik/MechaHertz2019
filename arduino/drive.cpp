@@ -26,7 +26,7 @@ int Drive::remap_speed(bool dir, int speed) {
 
 /*  
 Turn the robot left or right.
-dir: true for clockwise, false for anticlockwise
+dir: true for clockwise (right), false for anticlockwise (left)
 speed: 0-100
 */  
 void Drive::turn(bool dir, int speed) {

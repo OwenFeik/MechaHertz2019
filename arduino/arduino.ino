@@ -8,12 +8,14 @@ bool go = false; // Stop/go toggled by the button
 
 Compass *compass;
 Pixy *pixy;
+Drive *drive;
 
 void setup() {
     Serial.begin(115200);
 
     compass = new Compass();
     pixy = new Pixy();
+    drive = new Drive(12, 13, 14);
 
     pinMode(btn_pin, INPUT); // Set up the button
 }
@@ -34,10 +36,28 @@ void loop() {
             Serial.print(pixy->y);
         }
 
-        compass->getHeading(); // Function that updates the heading
+        compass->update(); // Function that updates the heading
         Serial.print(" H: ");
         Serial.println(compass->heading);
     }
+
+    if (pixy.visible) {
+        if (pixy.in_front) {
+            if (compass.facing_goal) {
+                drive.go(true, 100);        
+            }
+        }
+        
+    }
+    else {
+        if (pixy.heading <= 180) {
+            drive.turn(true, 100);
+        }
+        else {
+            drive.turn(false, 100);
+        }
+    }
+
 }
 
 

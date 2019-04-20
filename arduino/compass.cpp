@@ -50,19 +50,20 @@ void Compass::updateXYZ() {
 }
 
 // Get current bearing of compass relative to T
-float Compass::getHeading() {  
-
+void Compass::update() {  
     this->updateXYZ();
 
     float heading;
-
     heading = atan2(this->x, this->y)/0.0174532925;
     if (heading < 0) {
         heading += 360;
     }
     this->heading = abs(heading - 360);
 
-    return this->heading;
+    this->facing_goal = false;
+    if (abs(heading - this->initial_heading) <= 30) {
+        this->facing_goal = true;
+    }
 }
 
 // Return the average of 10 compass readings
