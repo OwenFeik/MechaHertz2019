@@ -14,28 +14,33 @@ Compass::Compass() {
 
 // Calculate the x and y offset of the compass (doesn't work atm)
 void Compass::calibrateSelf() {
-    int min_x = this->x;
-    int min_y = this->y;
-    int max_x = this->x; 
-    int max_y = this->y;
+    int min_x = this->x, max_x = this->x;
+    int min_y = this->y, max_y = this->y;
+    int min_z = this->z, max_z = this->z;
 
     for (int i = 0; i < 100; i++) {
         this->updateXYZ();
         if (this->x > max_x) {max_x = this->x;}
-        if (this->y > max_y) {max_y = this->y;}
         if (this->x < min_x) {min_x = this->x;}
-        if (this->y < min_x) {min_x = this->y;}
+        if (this->y > max_y) {max_y = this->y;}
+        if (this->y < min_y) {min_x = this->y;}
+        if (this->z > max_z) {max_z = this->z;}
+        if (this->z < min_z) {min_z = this->z;}
+
         delay(100);
     }
 
-    this->x_offset = (min_x + max_x)/2;
-    this->y_offset = (min_y + max_y)/2;
+    this->x_bias = int((min_x + max_x) / 2);
+    this->y_bias = int((min_y + max_y) / 2);
+    this->z_bias = int((min_z + max_z) / 2);
 
-    Serial.println(x_offset);
-    Serial.println(y_offset);
+    /*
+    Scale factor?
+    500 / (max - min)?
+    */
 }
 
-
+// Update the x, y and z values of the compass object 
 void Compass::updateXYZ() {
     Wire.beginTransmission(0x1E);
     Wire.write(0x03); //select register 3, X MSB register

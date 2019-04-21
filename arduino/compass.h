@@ -2,7 +2,7 @@
 
 class Compass {
     public:
-        float x_offset, y_offset;
+        float x_bias, y_bias, z_bias;
         int x, y, z;
         float heading;
         float initial_heading; // The direction the bot initially faced, degrees true
