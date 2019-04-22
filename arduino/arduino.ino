@@ -14,6 +14,7 @@ void setup() {
     Serial.begin(115200);
 
     compass = new Compass();
+    // compass->calibrateSelf(); // Doesn't currently work
     pixy = new Pixy();
     drive = new Drive(12, 13, 14);
 
@@ -41,23 +42,22 @@ void loop() {
         Serial.println(compass->heading);
     }
 
-    if (pixy.visible) {
-        if (pixy.in_front) {
-            if (compass.facing_goal) {
-                drive.go(true, 100);        
+    if (pixy->visible) {
+        if (pixy->in_front) {
+            if (compass->facing_goal) {
+                drive->go(true, 100);        
             }
         }
         
     }
     else {
-        if (pixy.heading <= 180) {
-            drive.turn(true, 100);
+        if (pixy->heading <= 180) {
+            drive->turn(true, 100);
         }
         else {
-            drive.turn(false, 100);
+            drive->turn(false, 100);
         }
     }
-
 }
 
 

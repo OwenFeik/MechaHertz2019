@@ -9,30 +9,37 @@ Compass::Compass() {
     Wire.write(0x00);
     Wire.endTransmission();
 
-    this->initial_heading = this->getAccurateHeading();
+    initial_heading = getAccurateHeading();
 }
 
 // Calculate the x and y offset of the compass (doesn't work atm)
 void Compass::calibrateSelf() {
-    int min_x = this->x, max_x = this->x;
-    int min_y = this->y, max_y = this->y;
-    int min_z = this->z, max_z = this->z;
+    int min_x = x, max_x = x;
+    int min_y = y, max_y = y;
+    int min_z = z, max_z = z;
 
     for (int i = 0; i < 100; i++) {
-        this->updateXYZ();
-        if (this->x > max_x) {max_x = this->x;}
-        if (this->x < min_x) {min_x = this->x;}
-        if (this->y > max_y) {max_y = this->y;}
-        if (this->y < min_y) {min_x = this->y;}
-        if (this->z > max_z) {max_z = this->z;}
-        if (this->z < min_z) {min_z = this->z;}
+        updateXYZ();
+        if (x > max_x) {max_x = x;}
+        if (x < min_x) {min_x = x;}
+        if (y > max_y) {max_y = y;}
+        if (y < min_y) {min_x = y;}
+        if (z > max_z) {max_z = z;}
+        if (z < min_z) {min_z = z;}
 
         delay(100);
     }
 
-    this->x_bias = int((min_x + max_x) / 2);
-    this->y_bias = int((min_y + max_y) / 2);
-    this->z_bias = int((min_z + max_z) / 2);
+    x_bias = int((min_x + max_x) / 2);
+    y_bias = int((min_y + max_y) / 2);
+    z_bias = int((min_z + max_z) / 2);
+
+    // Serial.print("x bias: ");
+    // Serial.println(this->x_bias);
+    // Serial.print("y bias: ");
+    // Serial.println(this->y_bias);
+    // Serial.print("z bias: ");
+    // Serial.println(this->z_bias);
 
     /*
     Scale factor?
@@ -48,26 +55,25 @@ void Compass::updateXYZ() {
 
     Wire.requestFrom(0x1E, 6);
     if(6 <= Wire.available()) {
-        this->x = Wire.read() << 8 | Wire.read();
-        this->z = Wire.read() << 8 | Wire.read();
-        this->y = Wire.read() << 8 | Wire.read();
+        x = Wire.read() << 8 | Wire.read();
+        z = Wire.read() << 8 | Wire.read();
+        y = Wire.read() << 8 | Wire.read();
     }
 }
 
 // Get current bearing of compass relative to T
 void Compass::update() {  
-    this->updateXYZ();
+    updateXYZ();
 
-    float heading;
-    heading = atan2(this->x, this->y)/0.0174532925;
+    heading = atan2(x, y)/0.0174532925;
     if (heading < 0) {
         heading += 360;
     }
-    this->heading = abs(heading - 360);
+    heading = abs(heading - 360);
 
-    this->facing_goal = false;
-    if (abs(heading - this->initial_heading) <= 30) {
-        this->facing_goal = true;
+    facing_goal = false;
+    if (abs(heading - initial_heading) <= 30) {
+        facing_goal = true;
     }
 }
 
@@ -75,9 +81,10 @@ void Compass::update() {
 float Compass::getAccurateHeading() {
     float heading_sum=0;
     for(int i = 0; i < 10; i++) {
-        heading_sum += getHeading();
+        update();
+        heading_sum += heading;
     }
-    this->heading = heading_sum/10;
+    heading = heading_sum/10;
 
-    return this->heading;
+    return heading;
 }

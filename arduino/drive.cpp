@@ -6,9 +6,9 @@ Constructor
 Accepts 3 pins, which should be attached to the ESCs
 */
 Drive::Drive(int pin_left, int pin_right, int pin_rear) {    
-    this->mot_left.attach(pin_left, 1000, 2000); // Pulse time 1-2ms
-    this->mot_right.attach(pin_right, 1000, 2000);
-    this->mot_rear.attach(pin_rear, 1000, 2000);
+    mot_left.attach(pin_left, 1000, 2000); // Pulse time 1-2ms
+    mot_right.attach(pin_right, 1000, 2000);
+    mot_rear.attach(pin_rear, 1000, 2000);
 }
 
 /*
@@ -22,6 +22,8 @@ int Drive::remap_speed(bool dir, int speed) {
         speed *= -1;
     }
     speed += 90;
+
+    return speed;
 }
 
 /*  
@@ -30,11 +32,11 @@ dir: true for clockwise (right), false for anticlockwise (left)
 speed: 0-100
 */  
 void Drive::turn(bool dir, int speed) {
-    speed = this.remap_speed(dir, speed)
+    speed = remap_speed(dir, speed);
 
-    this->mot_left.write(speed);
-    this->mot_right.write(speed);
-    this->mot_rear.write(speed);
+    mot_left.write(speed);
+    mot_right.write(speed);
+    mot_rear.write(speed);
 }
 
 /*
@@ -43,10 +45,10 @@ dir: true for forward, false for backward
 speed: 0-100
 */
 void Drive::go(bool dir, int speed) {
-    speed = this->remap_speed(dir, speed);
+    speed = remap_speed(dir, speed);
     
-    this->mot_left.write(speed);
-    this->mot_right.write(180 - speed);
+    mot_left.write(speed);
+    mot_right.write(180 - speed);
 }
 
 /*
@@ -55,9 +57,9 @@ dir: true for right, false for left
 speed: 0-100
 */
 void Drive::strafe(bool dir, int speed) {
-    speed = this->remap_speed(dir, speed);
+    speed = remap_speed(dir, speed);
 
-    this->mot_left.write(speed)
-    this->mot_right.write(speed)
-    this->mot_rear.write(180 - speed)
+    mot_left.write(speed);
+    mot_right.write(speed);
+    mot_rear.write(180 - speed);
 }
