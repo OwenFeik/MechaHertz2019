@@ -1,14 +1,22 @@
 from rplidar import RPLidar
 from math import sin,cos,radians
 import cv2
+import serial
 
 lidar=RPLidar('COM3')
 data=lidar.iter_scans()
+
+arduino_comm = serial.Serial('COM6', 115200) #port, baud rate
 
 # import json # Use dummy data for no lidar
 # with open('data/dummydata.json','r') as f:
 #     data=json.load(f)
 
+def send_to_Arduino(items):
+    # should work for any array, just don't use commas, this is what i had for my raspi code
+    message = ",".join(items)
+    arduino_comm.write(message)
+    
 def make_point(bearing,distance):
     """Bearing is the bearing of the lidar reading in degrees, distance is the distance in mm.\nReturns an (x,y) point."""
     bearing=radians(bearing)
@@ -96,7 +104,10 @@ while go:
 
             cv2.circle(base,(point[0]+500,point[1]+500),2,point_colour,2)
 
-        l,r,t,b=m.find_edges()
+        edges=m.find_edges()
+        send_to_Arduino(edges)
+        l,r,t,b=edges
+        
         cv2.line(base,(l+500,0),(l+500,1000),line_colour)
         cv2.line(base,(r+500,0),(r+500,1000),line_colour)
         cv2.line(base,(0,t+500),(1000,t+500),line_colour)
