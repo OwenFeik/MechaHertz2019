@@ -16,7 +16,7 @@ void setup() {
     compass = new Compass();
     // compass->calibrateSelf(); // Doesn't currently work
     pixy = new Pixy();
-    drive = new Drive(12, 13, 14);
+    drive = new Drive(11, 12, 13, 14, 15, 16);
 
     pinMode(btn_pin, INPUT); // Set up the button
 }
