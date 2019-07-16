@@ -16,9 +16,9 @@ Turn the robot left or right.
 speed: -100-100
 */  
 void Drive::turn(int speed) {
-    mot_left.drive(speed);
-    mot_right.drive(speed);
-    mot_rear.drive(speed);
+    mot_left->drive(speed);
+    mot_right->drive(speed);
+    mot_rear->drive(speed);
 }
 
 /*
@@ -26,9 +26,9 @@ Drive the robot forward or backward.
 speed: 0-100
 */
 void Drive::go(int speed) {
-    mot_left.drive(speed);
-    mot_right.drive(-1 * speed);
-    mot_rear.drive(0);
+    mot_left->drive(speed);
+    mot_right->drive(-1 * speed);
+    mot_rear->drive(0);
 }
 
 /*
@@ -36,13 +36,13 @@ Strafe the bot to the left or right.
 speed: 0-100
 */
 void Drive::strafe(int speed) {
-    mot_left.drive(speed);
-    mot_right.drive(speed);
-    mot_rear.drive(-1 * speed);
+    mot_left->drive(speed);
+    mot_right->drive(speed);
+    mot_rear->drive(-1 * speed);
 }
 
 void Drive::stop() {
-    mot_left.stop();
-    mot_right.stop();
-    mot_rear.stop();
+    mot_left->stop();
+    mot_right->stop();
+    mot_rear->stop();
 }

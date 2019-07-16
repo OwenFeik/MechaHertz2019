@@ -11,7 +11,7 @@ Motor::Motor(int pin1, int pin2) {
 
 void Motor::drive(int speed) {
     if (speed == 0) {
-        stop()
+        stop();
     }
     else {
         bool direction;
