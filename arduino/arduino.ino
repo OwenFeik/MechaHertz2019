@@ -1,62 +1,27 @@
+#include "colour.h"
 #include "compass.h"
 #include "drive.h"
 #include "pixy.h"
+#include "toggle.h"
 
-int btn_val; // Digital output of the button
-int btn_pin = 22; // Pin the button is wired to
-bool go = false; // Stop/go toggled by the button
-
-Compass *compass;
-Pixy *pixy;
-Drive *drive;
+Colour colour = Colour();
+Pixy pixy = Pixy();
+Compass compass = Compass();
+Drive drive = Drive(11, 12, 13, 14, 15, 16);
+Toggle toggle = Toggle(22, 23);
 
 void setup() {
     Serial.begin(115200);
-
-    compass = new Compass();
-    // compass->calibrateSelf(); // Doesn't currently work
-    pixy = new Pixy();
-    drive = new Drive(12, 13, 14);
-
-    pinMode(btn_pin, INPUT); // Set up the button
+    compass.calibrateSelf(); //Doesn't currently work
 }
 
 void loop() {
-    btn_val = digitalRead(btn_pin); // Output of the button
-    if (btn_val == LOW) { // Button outputs digital LOW when pressed
-        go = !go;
-        delay(500); // Delay to allow person to remove finger from button
+    state = toggle.getState();
+    if (state == 1) {
+
     }
-
-    if (go) {
-        pixy->update();
-        if (pixy->visible) {
-            Serial.print("X: ");
-            Serial.print(pixy->x);
-            Serial.print(" Y: ");
-            Serial.print(pixy->y);
-        }
-
-        compass->update(); // Function that updates the heading
-        Serial.print(" H: ");
-        Serial.println(compass->heading);
-    }
-
-    if (pixy->visible) {
-        if (pixy->in_front) {
-            if (compass->facing_goal) {
-                drive->go(true, 100);        
-            }
-        }
+    else if (state == 2) {
         
-    }
-    else {
-        if (pixy->heading <= 180) {
-            drive->turn(true, 100);
-        }
-        else {
-            drive->turn(false, 100);
-        }
     }
 }
 
