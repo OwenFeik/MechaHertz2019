@@ -16,8 +16,12 @@ void setup() {
 }
 
 void loop() {
-    if (toggle.getState() == 1) {
+    state = toggle.getState();
+    if (state == 1) {
 
+    }
+    else if (state == 2) {
+        
     }
 }
 
