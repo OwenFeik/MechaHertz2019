@@ -7,23 +7,22 @@
 Colour colour = Colour();
 Pixy pixy = Pixy();
 Compass compass = Compass();
-Drive drive = Drive(11, 12, 13, 14, 15, 16);
+Drive drive = Drive(8, 9, 10, 11, 13, 12);
 Toggle toggle = Toggle(22, 23);
 
 void setup() {
     Serial.begin(115200);
-    compass.calibrateSelf(); //Doesn't currently work
 }
 
 void loop() {
-    state = toggle.getState();
+    int state = toggle.getState();
     if (state == 1) {
 
     }
     else if (state == 2) {
-        
+    
+    }
+    else {
+
     }
 }
-
-
-

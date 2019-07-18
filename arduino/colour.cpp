@@ -28,10 +28,10 @@ int Colour::getColour() {
     Input: The colour to set ranges for.
         0: Green, 1: White, 2: Black
 */
-void Colour::setRange(int colour = -1, bool print_to_serial = false) {
+void Colour::setRange(int colour, bool print_to_serial) {
     int r_min = 255, r_max = 0, g_min = 255, g_max = 0, b_min = 255, b_max = 0;
 
-    for (int i = 0, i < 100, i++) {
+    for (int i = 0; i < 100; i++) {
         sensor.getRGB(&red, &green, &blue);
 
         if (r_min > red) { r_min = red; }
