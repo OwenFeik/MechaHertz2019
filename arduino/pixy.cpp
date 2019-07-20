@@ -2,8 +2,8 @@
 #include <Arduino.h> // 'map' function
 
 Pixy::Pixy() {
-    this->pixy.init(); // Needed to start up the PixyCam
-    this->visible = false; // Start the ball as unseen
+    pixy.init(); // Needed to start up the PixyCam
+    visible = false; // Start the ball as unseen
 }
 
 void Pixy::update() {

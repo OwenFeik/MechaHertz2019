@@ -1,29 +1,40 @@
-#include "colour.h"
-#include "compass.h"
-#include "drive.h"
-#include "pixy.h"
-#include "toggle.h"
+// #include "colour.h"
+// #include "compass.h"
+// #include "drive.h"
+// #include "pixy.h"
+// #include "toggle.h"
+#include "tof.h"
 
-Colour colour = Colour();
-Pixy pixy = Pixy();
-Compass compass = Compass();
-Drive drive = Drive(11, 12, 13, 14, 15, 16);
-Toggle toggle = Toggle(22, 23);
+int tof_shutdown_pins[] = {30, 31, 32, 33};
+
+// Colour colour = Colour();
+// Pixy pixy = Pixy();
+// Compass compass = Compass();
+// Drive drive = Drive(8, 9, 10, 11, 13, 12);
+// Toggle toggle = Toggle(22, 23);
+Tof tof = Tof(tof_shutdown_pins);
 
 void setup() {
     Serial.begin(115200);
-    compass.calibrateSelf(); //Doesn't currently work
+    tof.init();
 }
 
 void loop() {
-    state = toggle.getState();
-    if (state == 1) {
+    tof.read();
+    for (int i = 0; i < 4; i++) {
+        Serial.print(tof.readings[i]);
+        Serial.print(" ");
+    }
+    Serial.println();
 
-    }
-    else if (state == 2) {
-        
-    }
+    // int state = toggle.getState();
+    // if (state == 1) {
+
+    // }
+    // else if (state == 2) {
+    
+    // }
+    // else {
+
+    // }
 }
-
-
-
