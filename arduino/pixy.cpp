@@ -25,9 +25,11 @@ void Pixy::update() {
         height = map(pixy.ccc.blocks[0].m_height, 1, 208, 1, 100); // Scale to percentage
         age = pixy.ccc.blocks[0].m_age; // Number of frames object has been visible
         visible = true; // If the pixy outputs blocks, we are seeing the ball
+        last_seen = 0; // Frames since we spotted the ball
     }
     else {
         in_front = false;
         visible = false; // If it didn't output blocks, we didn't see the ball
+        last_seen += 1;
     }
 }

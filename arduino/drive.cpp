@@ -11,38 +11,66 @@ Drive::Drive(int mot_1_pin_1, int mot_1_pin_2, int mot_2_pin_1, int mot_2_pin_2,
     mot_rear = new Motor(mot_3_pin_1, mot_3_pin_2);
 }
 
+void Drive::drive(int speed_left, int speed_right, int speed_rear) {
+    mot_left->drive(speed_left);
+    mot_right->drive(speed_right);
+    mot_rear->drive(speed_rear);
+}
+
 /*  
 Turn the robot left or right.
-speed: -100-100
+speed: -100 - 100
 */  
 void Drive::turn(int speed) {
-    mot_left->drive(speed);
-    mot_right->drive(speed);
-    mot_rear->drive(speed);
+    drive(speed, speed, speed);
 }
 
 /*
 Drive the robot forward or backward.
-speed: 0-100
+speed: -100 - 100
 */
 void Drive::go(int speed) {
-    mot_left->drive(speed);
-    mot_right->drive(-1 * speed);
-    mot_rear->stop();
+    drive(speed, -1 * speed, 0);
 }
 
 /*
 Strafe the bot to the left or right.
-speed: 0-100
+speed: -100 - 100
 */
 void Drive::strafe(int speed) {
-    mot_left->drive(speed);
-    mot_right->drive(speed);
-    mot_rear->drive(-1 * speed);
+    drive(speed, speed, -1 * speed);
 }
 
 void Drive::stop() {
-    mot_left->stop();
-    mot_right->stop();
-    mot_rear->stop();
+    drive(0, 0, 0);
+}
+
+/* 
+Chase the ball; move forward while turning to face it head on.
+speed: 0-100
+x: proportional x position of the ball (output from Pixy object)
+*/
+void Drive::chase(int speed, float x) {
+    if (x > 30 && x < 70) {
+        go(speed);
+    }
+    else {
+        float multiplier = 0.7;
+        if (x > 20 && x < 80) {
+            multiplier = 0.55;
+        }
+        else if (x > 10 && x < 90) {
+            multiplier = 0.4;
+        }
+        else {
+            multiplier = 0.25;
+        }
+
+        if (x < 50) {
+            drive(int(speed * multiplier), -speed, 0);
+        }
+        else {
+            drive(speed, -int(speed * multiplier), 0);
+        }
+    }
 }
