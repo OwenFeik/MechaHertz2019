@@ -28,7 +28,7 @@ speed: 0-100
 void Drive::go(int speed) {
     mot_left->drive(speed);
     mot_right->drive(-1 * speed);
-    mot_rear->drive(0);
+    mot_rear->stop();
 }
 
 /*
