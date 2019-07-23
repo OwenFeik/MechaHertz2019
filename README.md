@@ -8,6 +8,7 @@ Adafruit Sensors:
 * https://github.com/adafruit/Adafruit_Sensor
 * https://github.com/adafruit/Adafruit_TCS34725
 * https://github.com/adafruit/Adafruit_VL53L0X
+* https://github.com/adafruit/Adafruit_L3GD20_U
 
 Pixy2 Camera:
 * https://pixycam.com/downloads-pixy2/

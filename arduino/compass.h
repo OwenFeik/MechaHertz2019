@@ -9,6 +9,7 @@ class Compass {
         bool facing_goal; // Is the bot facing the starting direction?
 
     Compass(); // Constructor
+    void init();
     void calibrateSelf(); // Calibrate the compass
     void updateXYZ(); // Update the public x,y,z ints
     void update(); // Get the most up to date heading

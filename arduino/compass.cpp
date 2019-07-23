@@ -3,6 +3,9 @@
 
 // Constructor; sets up the compass
 Compass::Compass() {
+}
+
+void Compass::init() {
     Wire.begin();
     Wire.beginTransmission(0x1E);
     Wire.write(0x02);
@@ -79,12 +82,12 @@ void Compass::update() {
 
 // Return the average of 10 compass readings
 float Compass::getAccurateHeading() {
-    float heading_sum=0;
+    float heading_sum = 0;
     for(int i = 0; i < 10; i++) {
         update();
         heading_sum += heading;
     }
-    heading = heading_sum/10;
+    heading = heading_sum / 10;
 
     return heading;
 }

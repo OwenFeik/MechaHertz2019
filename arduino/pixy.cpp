@@ -14,7 +14,7 @@ void Pixy::update() {
         y = pixy.ccc.blocks[0].m_y; // Y is in [0,208]
 
         x = map(x, 0, 316, 0, 100); // Remap to percentage
-        y = map(y, 0, 208, 0, 100); // Remap to percentage
+        y = 100 - map(y, 0, 208, 0, 100); // Remap to percentage
 
         in_front = false;
         if (x > 25 && x < 75) {
