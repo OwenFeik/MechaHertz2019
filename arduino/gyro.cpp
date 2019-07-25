@@ -57,14 +57,14 @@ void Gyro::update() {
     read();
 
     unsigned long _time = millis();
-    float delta_t = (_time - time) / 1000;
+    float t_delta = (_time - time) / 1000;
 
-    if (delta_t > 0.1) {
+    if (t_delta > calculation_interval) {
 
         // Serial.print("delta_t/1000: "); Serial.print(delta_t);
         // Serial.print(" z_sum/z_readings: "); Serial.println(z_sum / z_readings);
 
-        heading += (delta_t) * (z_sum / z_readings) * (180 / 3.1415926535); 
+        heading += (t_delta) * (z_sum / z_readings) * (180 / 3.1415926535); 
         if (heading > 360) {
             heading -= 360;
         }

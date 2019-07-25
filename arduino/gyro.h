@@ -10,6 +10,7 @@ class Gyro {
         bool use_offset = false;
         float x_offset = 0, y_offset = 0, z_offset = 0;
         float heading = 0;
+        float calculation_interval = 0.01;
 
     Gyro();
     void init();
