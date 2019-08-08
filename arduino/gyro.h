@@ -10,7 +10,10 @@ class Gyro {
         bool use_offset = false;
         float x_offset = 0, y_offset = 0, z_offset = 0;
         float heading = 0;
-        float calculation_interval = 0.01;
+        float time_interval = 0.01;
+        int sample_interval = 100;
+        float error_range = 0.15;
+        float to_degrees = 57.295779513082;
 
     Gyro();
     void init();
