@@ -10,5 +10,5 @@ class Tof {
     Tof(int _shutdown_pins[4]);
     void init();
     void resetSensors();
-    void read();
+    void update();
 };

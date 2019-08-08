@@ -5,9 +5,14 @@ Colour::Colour() {
     sensor = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_24MS, TCS34725_GAIN_4X);
 }
 
+
+void Colour::update() {
+    sensor.getRGB(&red, &green, &blue);
+}
+
 //Returns 0 if the current colour below the bot is green, 1 for white and 2 for black
 int Colour::getColour() {
-    sensor.getRGB(&red, &green, &blue);
+    update();
 
     if (g_r_min < red && g_r_max > red && g_b_min < green && g_g_max > green && g_g_min < blue && g_b_max > blue) {
         return 0;

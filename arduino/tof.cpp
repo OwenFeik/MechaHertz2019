@@ -18,6 +18,7 @@ void Tof::init() {
 
     for (int i = 0; i < 4; i++) {
         digitalWrite(shutdown_pins[i], HIGH);
+        delay(10);
         sensors[i].begin(0x30 + i); //Addresses 0x30 through 0x33
     }
 }
@@ -47,7 +48,7 @@ void Tof::resetSensors() {
     Update all range values.
     -1 denotes out of range.
 */
-void Tof::read() {
+void Tof::update() {
     for (int i = 0; i < 4; i++) {
        sensors[i].rangingTest(&measures[i], false);
        
