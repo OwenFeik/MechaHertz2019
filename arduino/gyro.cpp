@@ -52,7 +52,7 @@ void Gyro::read() {
         z = event.gyro.z;
     }
 }
-
+/*
 void Gyro::update() {
     read();
 
@@ -84,4 +84,32 @@ void Gyro::update() {
         // Serial.print(" z_readings: "); Serial.println(z_readings);
     }
 
+}
+*/
+void Gyro::update(){
+    read();
+    /* Drift correction since z_offest may change throughout this prevents the heading
+       from drifting when the robot is still. However, the robot may actually be moving
+       very slowly, so calibrate range to one that is most suitable*/
+    if (z < -error_range && z > error_range) { }
+    else { z_sum += z; }
+    
+    //Get total dist. travelled from average velocity
+    if (z_readings == sample_interval - 1){ //because readings start at 0, loop 0 - 99 instead of 1 - 100
+        // best if time interval variables are the closest
+        unsigned long _time = millis();
+        float t_delta = (_time - time) / 1000;
+
+        heading += (t_delta) * (z_sum / sample_interval) * (to_degrees); 
+
+        time = _time;
+
+        //Adjustment to 360 deg. range
+        if (heading > 360) { heading -= 360; }
+        else if (heading < 0) { heading += 360; }
+
+        z_sum = 0;
+        z_readings = 0;
+    } 
+    else { z_readings += 1; }
 }
