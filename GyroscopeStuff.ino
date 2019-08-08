@@ -8,9 +8,10 @@ Adafruit_L3GD20_Unified gyro = Adafruit_L3GD20_Unified(20);
 
 /*GLOBAL VARIABLES*/
 #define TO_DEGREES 57.295779513082 //Coefficient to convert RAD to DEG
+
 float gyroDrift = 0;
 float bearing = 0;
-float measuredtime, prevtime;
+float prevtime;
 float duration = 0;
 float calibratedspeed;
 int counter = 0;
@@ -45,25 +46,25 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   
-  //Serial.print("prevtime: ");Serial.println(prevtime);
   /*Do a bunch of code here who knows what's going on */
-  //gyroDrift = GyroZSpeed();
-  //Serial.print("DRIFT:");Serial.println(gyroDrift);
-  
 
+  //Get speed reading but ignore it if it's too small
   calibratedspeed = GyroZSpeed() - gyroDrift;
-  if (calibratedspeed < 0.15 && calibratedspeed > -0.15){
+  if (calibratedspeed < 0.15 && calibratedspeed > -0.15){ 
+    //range may have to be adjusted. Low values = more chance for drift, High values = less accurate especially when slow
     calibratedspeed = 0;
   }
   else{
     
   }
   
-  speedsum += calibratedspeed;
+  speedsum += calibratedspeed; //will be divided later on to get the average
   
   if (counter == 99){ //effectively loop from 0 - 99 (inclusive)
     bearing += GyroZDistance(speedsum); //multiply by time difference
     prevtime = millis();
+    
+    //Restart some variables
     speedsum = 0;
     Serial.print("TOTAL DISTANCE");Serial.println(bearing);
     counter = 0;
@@ -80,11 +81,6 @@ float GyroZSpeed(){
   return event.gyro.z;
 }
 float GyroZDistance(float s){
-  /*sensors_event_t event;
-  gyro.getEvent(&event);
-  Serial.print("SPEED: ");Serial.println(event.gyro.z);
-  calibratedspeed = event.gyro.z - gyroDrift;*/
-
   duration = (millis()-prevtime)/1000; //convert to seconds as this is the units used for instrument
   Serial.print("AVGSPEED: ");Serial.println(s*0.01);
   return s*duration*0.01*TO_DEGREES; //TO_DEGREES is not needed but useful for intuition
