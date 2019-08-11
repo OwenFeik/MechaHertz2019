@@ -11,6 +11,7 @@ class Colour {
 
     Colour();
     void update();
+    void print_colour();
     int getColour();
     void setRange(int colour = -1, bool print_to_serial = false);
 };

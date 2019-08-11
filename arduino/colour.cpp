@@ -1,5 +1,6 @@
 #include "colour.h"
 #include "Adafruit_TCS34725.h"
+#include <Arduino.h>
 
 Colour::Colour() {
     sensor = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_24MS, TCS34725_GAIN_4X);
@@ -80,4 +81,14 @@ void Colour::setRange(int colour, bool print_to_serial) {
         Serial.print(" b_min: "); Serial.print(b_min);
         Serial.print(" b_max: "); Serial.println(b_max);
     }
+}
+
+void Colour::print_colour() {
+    Serial.print("R: ");
+    Serial.print(red);
+    Serial.print(" G: ");
+    Serial.print(green);
+    Serial.print(" B: ");
+    Serial.print(blue);
+    Serial.println();
 }

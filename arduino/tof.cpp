@@ -52,11 +52,28 @@ void Tof::update() {
     for (int i = 0; i < 4; i++) {
        sensors[i].rangingTest(&measures[i], false);
        
-        if (measures[i].RangeStatus == 4) {
+        if (measures[i].RangeStatus == 4 || measures[i].RangeMilliMeter == 8191) {
             readings[i] = -1;
         }
         else {
             readings[i] = measures[i].RangeMilliMeter;
         }
     }
+
+    front = readings[0];
+    left = readings[1];
+    right = readings[2];
+    back = readings[3];
+}
+
+void Tof::print_distances() {
+    Serial.print("F: ");
+    Serial.print(readings[0]);
+    Serial.print(" L: ");
+    Serial.print(readings[1]);
+    Serial.print(" R: ");
+    Serial.print(readings[2]);
+    Serial.print(" B: ");
+    Serial.print(readings[3]);
+    Serial.println();
 }
