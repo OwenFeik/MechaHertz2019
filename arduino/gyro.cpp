@@ -91,7 +91,7 @@ void Gyro::update(){
     /* Drift correction since z_offest may change throughout this prevents the heading
        from drifting when the robot is still. However, the robot may actually be moving
        very slowly, so calibrate range to one that is most suitable*/
-    if (z < -error_range && z > error_range) { }
+    if (z < -error_range && z > error_range) { z_sum += 0 } //if within error range, round to 0
     else { z_sum += z; }
     
     //Get total dist. travelled from average velocity
