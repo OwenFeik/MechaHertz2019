@@ -8,7 +8,7 @@ class Drive {
     void drive(int speed_left, int speed_right, int speed_rear);
     void turn(int speed);
     void go(int speed);
-    void strafe(int speed);
+    void strafe(int speed, float heading = 0);
     void stop();
     void chase(int speed, float x);
 };

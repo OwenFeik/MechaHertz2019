@@ -37,8 +37,40 @@ void Drive::go(int speed) {
 Strafe the bot to the left or right.
 speed: -100 - 100
 */
-void Drive::strafe(int speed) {
-    drive(speed, speed, -1 * speed);
+void Drive::strafe(int speed, float heading) {
+    float left_multiplier = 0.5;
+    float right_multiplier = 0.5;
+
+    if (heading > 180 && heading < 350) {
+        if (heading > 340) {
+            left_multiplier = 0.45;
+            right_multiplier = 0.55;
+        }
+        else if (heading > 330) {
+            left_multiplier = 0.4;
+            right_multiplier = 0.6;
+        }
+        else {
+            left_multiplier = 0.3;
+            right_multiplier = 0.7;
+        }
+    }
+    else if (heading < 180 && heading > 10) {
+        if (heading < 20) {
+            right_multiplier = 0.45;
+            left_multiplier = 0.55;
+        }
+        else if (heading < 30) {
+            right_multiplier = 0.4;
+            left_multiplier = 0.6;
+        }
+        else {
+            right_multiplier = 0.3;
+            left_multiplier = 0.7;
+        }
+    }
+
+    drive(left_multiplier * speed, right_multiplier * speed, -1 * speed);
 }
 
 void Drive::stop() {
