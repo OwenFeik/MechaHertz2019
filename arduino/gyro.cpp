@@ -3,13 +3,20 @@
 #include <Adafruit_L3GD20_U.h>
 #include "gyro.h"
 
+#define to_degrees 57.295779513082 // This should be defined rather than a class property.
+
 Gyro::Gyro() {
     gyro = new Adafruit_L3GD20_Unified();
 }
 
-void Gyro::init() {
+void Gyro::init(bool debug) {
     gyro->enableAutoRange(true);
-    gyro->begin();
+    while (!gyro->begin()) {
+        if (debug) {
+            Serial.println("Gyro failed.");
+        }
+        delay(10);
+    }
 
     time = millis();
 
@@ -61,12 +68,10 @@ void Gyro::update() {
 
     if (t_delta > calculation_interval) {
 
-        // Serial.print("delta_t/1000: "); Serial.print(delta_t);
-        // Serial.print(" z_sum/z_readings: "); Serial.println(z_sum / z_readings);
+        float h_delta = (t_delta) * (z_sum / z_readings) * to_degrees;
 
-        float h_delta = (t_delta) * (z_sum / z_readings) * (180 / 3.1415926535);
-
-        if (h_delta > error_range || h_delta < -error_range) {
+        if (!(h_delta != h_delta)) {
+        // if (h_delta > error_range || h_delta < -error_range) {
             heading += h_delta;
             if (heading > 360) {
                 heading -= 360;
@@ -74,6 +79,7 @@ void Gyro::update() {
             else if (heading < 0) {
                 heading += 360;
             }
+        // }
         }
 
         time = _time;
@@ -85,19 +91,21 @@ void Gyro::update() {
         z_sum += z;
         z_readings += 1;
         
-        // Serial.print("z_sum: "); Serial.print(z_sum);
-        // Serial.print(" z_readings: "); Serial.println(z_readings);
     }
-
 }
-<<<<<<< HEAD
-=======
+
+/*
+
+// This code only updates the heading very rarely. Too infrequently to be useful.
+// Even when I drop the "sample_interval" to 10 its quite slow. I think the more
+// real-time readings from the above implementation compensate for the small amount
+// of drift.
 
 void Gyro::update(){
     read();
-    /* Drift correction since z_offest may change throughout this prevents the heading
-       from drifting when the robot is still. However, the robot may actually be moving
-       very slowly, so calibrate range to one that is most suitable*/
+    // Drift correction since z_offest may change throughout this prevents the heading
+    //   from drifting when the robot is still. However, the robot may actually be moving
+    //   very slowly, so calibrate range to one that is most suitable
     if (z < -error_range && z > error_range) { z_sum += 0; } //if within error range, round to 0
     else { z_sum += z; }
     
@@ -120,4 +128,4 @@ void Gyro::update(){
     } 
     else { z_readings += 1; }
 }
->>>>>>> 344aece055e25ad1eb56e7271445c7ac1d50d1e7
+*/

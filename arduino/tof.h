@@ -9,7 +9,7 @@ class Tof {
         int front, left, right, back;
 
     Tof(int _shutdown_pins[4]);
-    void init();
+    void init(bool debug = false);
     void resetSensors();
     void update();
     void print_distances();

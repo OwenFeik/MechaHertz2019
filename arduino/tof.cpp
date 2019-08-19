@@ -10,7 +10,7 @@ Tof::Tof(int _shutdown_pins[4]) {
 /*
     Configure pinouts and set I2C address for each sensor. 
 */
-void Tof::init() {
+void Tof::init(bool debug) {
     for (int i = 0; i < 4; i++) {
         pinMode(shutdown_pins[i], OUTPUT);
     }
@@ -19,7 +19,16 @@ void Tof::init() {
     for (int i = 0; i < 4; i++) {
         digitalWrite(shutdown_pins[i], HIGH);
         delay(10);
-        sensors[i].begin(0x30 + i); //Addresses 0x30 through 0x33
+
+        //Addresses 0x30 through 0x33
+        while (!sensors[i].begin(0x30 + i)) {
+            if (debug) {
+                Serial.print("Tof ");
+                Serial.print(i);
+                Serial.println(" failed.");
+            }
+            delay(10);
+        }
     }
 }
 

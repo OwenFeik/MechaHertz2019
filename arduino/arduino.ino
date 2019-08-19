@@ -28,7 +28,7 @@ void update_all() {
 }
 
 void setup() {
-    // Serial.begin(115200);
+    Serial.begin(115200);
     gyro.init();
 
     pinMode(40, OUTPUT); // Colour sensor pin
@@ -42,6 +42,7 @@ void setup() {
 
 void loop() {
     update_all();
+    tof.print_distances();
 
     if (state == 1) {
         if (pixy.visible) {
