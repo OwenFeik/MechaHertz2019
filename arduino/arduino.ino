@@ -28,7 +28,7 @@ void update_all() {
 }
 
 void setup() {
-    Serial.begin(115200);
+    // Serial.begin(115200);
     gyro.init();
 
     pinMode(40, OUTPUT); // Colour sensor pin
@@ -42,8 +42,8 @@ void setup() {
 
 void loop() {
     update_all();
-    tof.print_distances();
 
+    // Try to chase ball
     if (state == 1) {
         if (pixy.visible) {
             if (pixy.y < 20) {
@@ -65,7 +65,7 @@ void loop() {
         else {
             drive.stop();
         }
-    }
+    } // Try to centre self.
     else if (state == 2) {
         if (tof.left == -1 || tof.right == -1) {
             drive.stop();
