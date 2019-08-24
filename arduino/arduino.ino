@@ -6,12 +6,22 @@
 #include "gyro.h"
 // #include "compass.h"
 
-int tof_shutdown_pins[] = {30, 31, 32, 33}; // Front, Left, Right, Back
+#define BOT 1
+#define DEBUG true
+
+#if BOT == 1 // Original bot
+    int tof_shutdown_pins[] = {30, 31, 32, 33}; // Front, Left, Right, Back
+    int colour_power_pin = 40;
+    Toggle toggle = Toggle(24, 25);
+#elif BOT == 2 // Second bot
+    int tof_shutdown_pins[] = {14, 15, 16, 17}; // Front, Left, Right, Back
+    int colour_power_pin = 8;
+    Toggle toggle = Toggle(12, 13);
+#endif
 
 Colour colour = Colour(); // 0x29
 Pixy pixy = Pixy();
 Drive drive = Drive(2, 3, 4, 5, 6, 7);
-Toggle toggle = Toggle(24, 25);
 Tof tof = Tof(tof_shutdown_pins); // 0x29, switched over to 0x30 through 0x33 when tof.init() is called.
 Gyro gyro = Gyro(); // 0x6B
 // Compass compass = Compass();
@@ -28,16 +38,28 @@ void update_all() {
 }
 
 void setup() {
-    // Serial.begin(115200);
+    if (DEBUG) {
+        Serial.begin(115200);
+        Serial.println("Begin serial: ");
+    }
+    
     gyro.init();
 
-    pinMode(40, OUTPUT); // Colour sensor pin
-    digitalWrite(40, LOW); // Colour sensor off
+    if (DEBUG) {
+        Serial.println("Gyro successfully booted.");
+    }
+
+    pinMode(colour_power_pin, OUTPUT); // Colour sensor pin
+    digitalWrite(colour_power_pin, LOW); // Colour sensor off
     delay(10);
 
-    tof.init(); // Set new tof addresses
+    tof.init(true); // Set new tof addresses
 
-    digitalWrite(40, HIGH); // Colour sensor on
+    if (DEBUG) {
+        Serial.println("TOF successfully booted.");
+    }
+
+    digitalWrite(colour_power_pin, HIGH); // Colour sensor on
 }
 
 void loop() {
