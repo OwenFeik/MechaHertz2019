@@ -38,16 +38,17 @@ void update_all() {
 }
 
 void setup() {
-    if (DEBUG) {
+
+    #if DEBUG
         Serial.begin(115200);
         Serial.println("Begin serial: ");
-    }
+    #endif
     
     gyro.init();
 
-    if (DEBUG) {
+    #if DEBUG
         Serial.println("Gyro successfully booted.");
-    }
+    #endif
 
     pinMode(colour_power_pin, OUTPUT); // Colour sensor pin
     digitalWrite(colour_power_pin, LOW); // Colour sensor off
@@ -55,9 +56,9 @@ void setup() {
 
     tof.init(true); // Set new tof addresses
 
-    if (DEBUG) {
+    #if DEBUG
         Serial.println("TOF successfully booted.");
-    }
+    #endif
 
     digitalWrite(colour_power_pin, HIGH); // Colour sensor on
 }
