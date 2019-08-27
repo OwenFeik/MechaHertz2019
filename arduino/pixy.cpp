@@ -13,15 +13,15 @@ Pixy::Pixy() {
 void Pixy::update() {
     pixy.ccc.getBlocks();
 
+    last_seen += 1;
+    u_last_seen += 1;
+    y_last_seen += 1;
+
+    visible = false;
+    u_visible = false;
+    y_visible = false;
+
     if (pixy.ccc.numBlocks) {
-
-        last_seen += 1;
-        u_last_seen += 1;
-        y_last_seen += 1;
-
-        visible = false;
-        u_visible = false;
-        y_visible = false;
         
         for (int i = 0; i < pixy.ccc.numBlocks; i++) {
 

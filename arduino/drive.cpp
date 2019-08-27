@@ -83,19 +83,19 @@ speed: 0-100
 x: proportional x position of the ball (output from Pixy object)
 */
 void Drive::chase(int speed, float x) {
-    if (x > 30 && x < 70) {
+    if (x > 35 && x < 65) {
         go(speed);
     }
     else {
         float multiplier = 0.7;
-        if (x > 20 && x < 80) {
+        if (x > 25 && x < 75) {
             multiplier = 0.55;
         }
-        else if (x > 10 && x < 90) {
+        else if (x > 15 && x < 85) {
             multiplier = 0.4;
         }
         else {
-            multiplier = 0.25;
+            face(speed, x);
         }
 
         if (x < 50) {
@@ -104,5 +104,41 @@ void Drive::chase(int speed, float x) {
         else {
             drive(speed, -int(speed * multiplier), 0);
         }
+    }
+}
+
+void Drive::face(int speed, float x) {
+    int _speed = abs(speed);
+
+    if (x > 45 && x < 55) {
+        stop();
+    }
+    else if (x < 50) {
+        float multiplier = 1;
+        if (x > 40) {
+            multiplier = 0.25;
+        }
+        else if (x > 30) {
+            multiplier = 0.5;
+        }
+        else if (x > 20) {
+            multiplier = 0.7;
+        }
+
+        turn(int(multiplier * _speed * -1));
+    }
+    else {
+        float multiplier = 1;
+        if (x < 60) {
+            multiplier = 0.25;
+        }
+        else if (x < 70) {
+            multiplier = 0.5;
+        }
+        else if (x < 80) {
+            multiplier = 0.7;
+        }
+
+        turn(int(multiplier * _speed));
     }
 }

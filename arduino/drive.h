@@ -11,4 +11,5 @@ class Drive {
     void strafe(int speed, float heading = 0);
     void stop();
     void chase(int speed, float x);
+    void face(int speed, float x);
 };
