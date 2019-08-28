@@ -1,5 +1,7 @@
 #include "Adafruit_VL53L0X.h"
 
+#define _readingHistorySize 3
+
 class Tof {
     public:
         int* shutdown_pins;
@@ -10,7 +12,15 @@ class Tof {
 
     Tof(int _shutdown_pins[4]);
     void init(bool debug = false);
-    void resetSensors();
     void update();
     void print_distances();
+
+    private:
+        int _readingHistory[4][_readingHistorySize] = {}; // Keep reading history to apply median filter
+        int _filteredReadings[4];
+        int _readingIndex = 0; // Overwrite oldest value
+
+    void _resetSensors();
+    void _rotateReadings();
+    void _medianFilter();
 };
