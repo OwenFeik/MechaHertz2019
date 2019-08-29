@@ -9,11 +9,12 @@ class Tof {
         VL53L0X_RangingMeasurementData_t measures[4];
         int readings[4];
         int front, left, right, back;
+        bool off_center = false;
 
     Tof(int _shutdown_pins[4]);
     void init(bool debug = false);
     void update();
-    void print_distances();
+    void printDistances();
 
     private:
         int _readingHistory[4][_readingHistorySize] = {}; // Keep reading history to apply median filter

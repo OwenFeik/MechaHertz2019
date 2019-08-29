@@ -17,4 +17,5 @@ class Gyro {
     void calibrate(int readings = 100);
     void read();
     void update();
+    bool facingForward(int tolerance = 20);
 };

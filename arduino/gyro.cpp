@@ -35,7 +35,7 @@ void Gyro::calibrate(int readings) {
 
         delay(10);
     }
-
+    
     x_offset = _x_sum / readings;
     y_offset = _y_sum / readings;
     z_offset = _z_sum / readings;
@@ -70,8 +70,8 @@ void Gyro::update() {
 
         float h_delta = (t_delta) * (z_sum / z_readings) * to_degrees;
 
+        // != checks for NaN
         if (!(h_delta != h_delta)) {
-        // if (h_delta > error_range || h_delta < -error_range) {
             heading += h_delta;
             if (heading > 360) {
                 heading -= 360;
@@ -79,7 +79,6 @@ void Gyro::update() {
             else if (heading < 0) {
                 heading += 360;
             }
-        // }
         }
 
         time = _time;
@@ -91,6 +90,19 @@ void Gyro::update() {
         z_sum += z;
         z_readings += 1;
         
+    }
+}
+
+/*
+    Return true if the current bearing is within tolerance degrees
+    of initial, false if not.
+*/
+bool Gyro::facingForward(int tolerance) {
+    if (heading > 360 - tolerance || heading < 0 + tolerance) {
+        return true;
+    }
+    else {
+        return false;
     }
 }
 

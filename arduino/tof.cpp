@@ -91,7 +91,6 @@ void Tof::_medianFilter() {
             }
         }
 
-
         // Ignore all error readings
         int offset = 0;
         while (values[offset] == -1) {
@@ -135,9 +134,16 @@ void Tof::update() {
     left = _filteredReadings[1];
     right = _filteredReadings[2];
     back = _filteredReadings[3];
+
+    if (left / right > 1.10 || right / left > 1.10) {
+        off_center = true;
+    }
+    else {
+        off_center = false;
+    }
 }
 
-void Tof::print_distances() {
+void Tof::printDistances() {
     Serial.print("F: ");
     Serial.print(front);
     Serial.print(" L: ");
