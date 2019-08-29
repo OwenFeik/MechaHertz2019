@@ -1,6 +1,6 @@
+#include <Arduino.h>
 #include "tof.h"
 #include "Adafruit_VL53L0X.h"
-#include <Arduino.h>
 
 Tof::Tof(int _shutdown_pins[4]) {
     sensors = new Adafruit_VL53L0X[4] {Adafruit_VL53L0X(), Adafruit_VL53L0X(), Adafruit_VL53L0X(), Adafruit_VL53L0X()};
@@ -69,65 +69,34 @@ void Tof::_rotateReadings() {
 }
 
 /*
-    Note: does not work for even _readingHistorySize because I was tired when I wrote
-    this and couldn't be bothered to fix it. Shouldn't be too complex to do so. 
-
-    Later note: works well for size 3, can't guarantee anything beyond that because I 
-    really need to go to bed.
-
-    Sorry future Owen - Owen.
+    Bubble sorts readings to find the median value in order to reduce noise
+    in readings.
 */
 void Tof::_medianFilter() {
-
     for (int i = 0; i < 4; i++) {
-        int max_value = 0;
-        int min_value = 0;
-        int mid_value = 0;
+        int values[_readingHistorySize] = {};
+        memcpy(values, _readingHistory[i], _readingHistorySize); // Copy historical data into values
 
-        for (int j = 0; j < _readingHistorySize; j++) {
-            int val = _readingHistory[i][j];
-            
-            if (val >= max_value) {
-                if (max_value > 0) {
-                    if (mid_value > 0) {
-                        if (mid_value < min_value || min_value == 0) {
-                            min_value = mid_value;
-                            mid_value = max_value;
-                        }                        
-                        else {
-                            mid_value = (mid_value + max_value) / 2;
-                        }                        
-                    }
-                    else {
-                        mid_value = max_value;
-                    }
-                }
-
-                max_value = val; 
-            }
-            else if (val <= min_value || min_value == 0) {
-                if (min_value > 0) {
-                    if (mid_value > 0) {
-                        mid_value = (mid_value + min_value) / 2;
-                    }
-                    else {
-                        mid_value = min_value;
-                    }
-                }
-                
-                min_value = val;
-            }
-            else {
-                if (mid_value > 0) {
-                    mid_value = (mid_value + val) / 2;
-                }
-                else {
-                    mid_value = val;
+        bool swapped = true;
+        while (swapped) {
+            swapped = false;
+            for (int i = 1; i < _readingHistorySize; i++) {
+                if (values[i - 1] > values[i]) {
+                    int val_i = values[i];
+                    values[i] = values[i - 1];
+                    values[i - 1] = val_i;
+                    
+                    swapped = true;
                 }
             }
         }
-
-        _filteredReadings[i] = mid_value;
+        
+        if (_readingHistorySize % 2 == 0) {
+            _filteredReadings[i] = (values[_readingHistorySize / 2] + values[(_readingHistorySize / 2) - 1]) / 2;            
+        }
+        else {
+            _filteredReadings[i] = values[(_readingHistorySize - 1) / 2];
+        }
     }
 }
 
@@ -149,7 +118,8 @@ void Tof::update() {
         _readingHistory[i][_readingIndex] = readings[i];
     }
 
-    _rotateReadings();
+    _rotateReadings(); // Replace oldest readings each time
+    _medianFilter(); // Take the middle value of the stored readings to reduce noise
 
     front = _filteredReadings[0];
     left = _filteredReadings[1];
