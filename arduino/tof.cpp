@@ -90,12 +90,22 @@ void Tof::_medianFilter() {
                 }
             }
         }
-        
-        if (_readingHistorySize % 2 == 0) {
-            _filteredReadings[i] = (values[_readingHistorySize / 2] + values[(_readingHistorySize / 2) - 1]) / 2;            
+
+
+        // Ignore all error readings
+        int offset = 0;
+        while (values[offset] == -1) {
+            offset++;
+        }
+
+        if (offset == _readingHistorySize) {
+            _filteredReadings[i] = -1;
+        }
+        else if ((_readingHistorySize - offset) % 2 == 0) {
+            _filteredReadings[i] = (values[(_readingHistorySize + offset) / 2] + values[((_readingHistorySize + offset) / 2 - 1)]) / 2;
         }
         else {
-            _filteredReadings[i] = values[(_readingHistorySize - 1) / 2];
+            _filteredReadings[i] = values[(_readingHistorySize + offset - 1) / 2];
         }
     }
 }
