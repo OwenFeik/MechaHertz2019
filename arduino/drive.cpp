@@ -142,3 +142,37 @@ void Drive::face(int speed, float x) {
         turn(int(multiplier * _speed));
     }
 }
+
+void Drive::forward(int speed, float heading) {
+    if (heading > 340 || heading < 20) {
+        stop();
+    }
+    else if (heading < 180) {
+        float multiplier = 1;
+        if (heading < 40) {
+            multiplier = 0.25;
+        }
+        else if (heading < 60) {
+            multiplier = 0.5;
+        }
+        else if (heading < 80) {
+            multiplier = 0.7;
+        }
+
+        turn(speed * multiplier);
+    }
+    else {
+        float multiplier = 1;
+        if (heading > 320) {
+            multiplier = 0.25;
+        }
+        else if (heading < 300) {
+            multiplier = 0.5;
+        }
+        else if (heading < 280) {
+            multiplier = 0.7;
+        }
+
+        turn(-1 * speed * multiplier);
+    }
+}
