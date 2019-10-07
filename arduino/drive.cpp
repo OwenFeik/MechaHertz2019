@@ -176,3 +176,32 @@ void Drive::forward(int speed, float heading) {
         turn(-1 * speed * multiplier);
     }
 }
+
+#define PI 3.14159
+
+void Drive::euclid(double bearing, int speed)
+{    
+    double xvalue = cos(bearing / 180 * PI);
+    double yvalue = sin(bearing / 180 * PI);
+    
+    double motor1 = yvalue * cos(35  * PI / 180) - xvalue * sin(35  * PI / 180);
+    double motor2 = yvalue * cos(145 * PI / 180) - xvalue * sin(145 * PI / 180);
+    double motor3 = yvalue * cos(215 * PI / 180) - xvalue * sin(215 * PI / 180);
+    double motor4 = yvalue * cos(325 * PI / 180) - xvalue * sin(325 * PI / 180);
+    
+    double balance = 1/fmax(fmax((motor1), (motor2)), fmax((motor3), (motor4)));
+    
+    motor1 *= balance;
+    motor2 *= balance;
+    motor3 *= balance;
+    motor4 *= balance;
+    
+    std::cout << "Front R: ";
+    std::cout << speed * motor4;
+    std::cout << " Front L: ";
+    std::cout << speed * motor1;
+    std::cout << " Back R: ";
+    std::cout << speed * motor3;
+    std::cout << " Back L: ";
+    std::cout << speed * motor2;
+}
