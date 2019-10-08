@@ -68,7 +68,7 @@ void Compass::updateXYZ() {
 void Compass::update() {  
     updateXYZ();
 
-    heading = atan2(x, y)/0.0174532925;
+    heading = atan2(x, y)/DEG_TO_RAD; 
     if (heading < 0) {
         heading += 360;
     }

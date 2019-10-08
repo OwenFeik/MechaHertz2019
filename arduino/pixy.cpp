@@ -2,8 +2,8 @@
 #include <Arduino.h> // 'map' function
 
 #define BALL_SIGNATURE 1
-#define BLUE_SIGNATURE 2
-#define YELLOW_SIGNATURE 3
+#define BLUE_SIGNATURE 3
+#define YELLOW_SIGNATURE 2
 
 Pixy::Pixy() {
     pixy.init(); // Needed to start up the PixyCam
