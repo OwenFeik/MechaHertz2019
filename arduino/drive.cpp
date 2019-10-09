@@ -19,6 +19,34 @@ void Drive::drive(int speed_FR, int speed_FL, int speed_BR, int speed_BL) {
     mot_BL->drive(speed_BL);
 }
 
+void Drive::euclid(float bearing, int speed, float rotation)
+{    
+    float xvalue = cos(bearing * DEG_TO_RAD);
+    float yvalue = sin(bearing * DEG_TO_RAD);
+    
+    float mot_FL = yvalue * cos(35 * DEG_TO_RAD) - xvalue * sin(35 * DEG_TO_RAD) + rotation;
+    float mot_BL = yvalue * cos(145 * DEG_TO_RAD) - xvalue * sin(145 * DEG_TO_RAD) + rotation;
+    float mot_BR = yvalue * cos(215 * DEG_TO_RAD) - xvalue * sin(215 * DEG_TO_RAD) + rotation;
+    float mot_FR = yvalue * cos(325 * DEG_TO_RAD) - xvalue * sin(325 * DEG_TO_RAD) + rotation;
+    
+    float balance = speed/max(max((mot_FL), (mot_BL)), max((mot_BR), (mot_FR)));
+    
+    mot_FL *= balance;
+    mot_BL *= balance;
+    mot_BR *= balance;
+    mot_FR *= balance;
+    
+    drive(mot_FR, mot_FL, mot_BR, mot_BL);
+}
+
+void Drive::stop() {
+    drive(0, 0, 0, 0);
+}
+
+void Drive::go(int speed) {
+    euclid(0, speed);
+}
+
 /*  
 Turn the robot left or right.
 speed: -100 - 100
@@ -33,9 +61,6 @@ void Drive::turn(int speed) {
 Drive the robot forward or backward.
 speed: -100 - 100
 */
-void Drive::go(int speed) {
-    euclid(0, speed);
-}
 
 /*
 Strafe the bot to the left or right.
@@ -78,10 +103,6 @@ void Drive::strafe(int speed, float heading) {
     drive(left_multiplier * speed, right_multiplier * speed, -1 * speed);
 }
 */
-
-void Drive::stop() {
-    drive(0, 0, 0, 0);
-}
 
 /* 
 Chase the ball; move forward while turning to face it head on.
@@ -188,23 +209,3 @@ void Drive::forward(int speed, float heading) {
     }
 }
 */
-
-void Drive::euclid(float bearing, int speed)
-{    
-    float xvalue = cos(bearing / 180 * PI);
-    float yvalue = sin(bearing / 180 * PI);
-    
-    float mot_FL = yvalue * cos(35  * PI / 180) - xvalue * sin(35  * PI / 180);
-    float mot_BL = yvalue * cos(145 * PI / 180) - xvalue * sin(145 * PI / 180);
-    float mot_BR = yvalue * cos(215 * PI / 180) - xvalue * sin(215 * PI / 180);
-    float mot_FR = yvalue * cos(325 * PI / 180) - xvalue * sin(325 * PI / 180);
-    
-    float balance = speed/max(max((mot_FL), (mot_BL)), max((mot_BR), (mot_FR)));
-    
-    mot_FL *= balance;
-    mot_BL *= balance;
-    mot_BR *= balance;
-    mot_FR *= balance;
-    
-    drive(mot_FR, mot_FL, mot_BR, mot_BL);
-}
