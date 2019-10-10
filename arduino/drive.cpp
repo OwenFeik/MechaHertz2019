@@ -21,20 +21,17 @@ void Drive::drive(int speed_FR, int speed_FL, int speed_BR, int speed_BL) {
 
 void Drive::euclid(float bearing, int speed, float rotation)
 {    
-    float xvalue = cos(bearing * DEG_TO_RAD);
-    float yvalue = sin(bearing * DEG_TO_RAD);
-    
-    float mot_FL = yvalue * cos(35 * DEG_TO_RAD) - xvalue * sin(35 * DEG_TO_RAD) + rotation;
-    float mot_BL = yvalue * cos(145 * DEG_TO_RAD) - xvalue * sin(145 * DEG_TO_RAD) + rotation;
-    float mot_BR = yvalue * cos(215 * DEG_TO_RAD) - xvalue * sin(215 * DEG_TO_RAD) + rotation;
-    float mot_FR = yvalue * cos(325 * DEG_TO_RAD) - xvalue * sin(325 * DEG_TO_RAD) + rotation;
+    float mot_FL = yvalue * 0.819 - xvalue * 0.574; // mot_FL -> 35*
+    float mot_BL = yvalue * -1 * 0.819 - xvalue * 0.574; // mot_BL -> 145*
+    float mot_BR = yvalue * -1 * 0.819 - xvalue * -1 * 0.574; // mot_BR -> 215*
+    float mot_FR = yvalue * 0.819 - xvalue * -1 * 0.574; // mot_BR -> 325*
     
     float balance = speed/max(max((mot_FL), (mot_BL)), max((mot_BR), (mot_FR)));
     
-    mot_FL *= balance;
-    mot_BL *= balance;
-    mot_BR *= balance;
-    mot_FR *= balance;
+    mot_FL = (balance * mot_FL) + rotation;
+    mot_BL = (balance * mot_BL) + rotation;
+    mot_BR = (balance * mot_BR) + rotation;
+    mot_FR = (balance * mot_FR) + rotation;
     
     drive(mot_FR, mot_FL, mot_BR, mot_BL);
 }
