@@ -21,6 +21,9 @@ void Drive::drive(int speed_FR, int speed_FL, int speed_BR, int speed_BL) {
 
 void Drive::euclid(float bearing, int speed, float rotation)
 {    
+    float xvalue = cos(bearing * DEG_TO_RAD);
+    float yvalue = sin(bearing * DEG_TO_RAD);
+    
     float mot_FL = yvalue * 0.819 - xvalue * 0.574; // mot_FL -> 35*
     float mot_BL = yvalue * -1 * 0.819 - xvalue * 0.574; // mot_BL -> 145*
     float mot_BR = yvalue * -1 * 0.819 - xvalue * -1 * 0.574; // mot_BR -> 215*
