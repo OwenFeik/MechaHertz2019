@@ -7,17 +7,17 @@
 import cv2
 from time import perf_counter
 
-# To use PiCamera:
-from picamera import PiCamera
-from picamera.array import PiRGBArray
+# # To use PiCamera:
+# from picamera import PiCamera
+# from picamera.array import PiRGBArray
 
-camera=PiCamera()
-camera.resolution=(640,480)
-camera.framerate=90
-raw_capture=PiRGBArray(camera,size=(640,480))
+# camera=PiCamera()
+# camera.resolution=(640,480)
+# camera.framerate=90
+# raw_capture=PiRGBArray(camera,size=(640,480))
 
-# # To use video file:
-# vs=cv2.VideoCapture('path/to/test.mp4')
+# To use video file:
+vs=cv2.VideoCapture('test.mp4')
 # # To use web cam:
 # vs=cv2.VideoCapture(0)
 
@@ -26,13 +26,13 @@ fps_readings=[]
 frame_count=0
 prev_time=0
 
-for image in camera.capture_continuous(raw_capture,format="bgr",use_video_port=True): # When using PiCamera.
-# while True: # When using VideoCapture.
+# for image in camera.capture_continuous(raw_capture,format="bgr",use_video_port=True): # When using PiCamera.
+while True: # When using VideoCapture.
     ball_detected=False
 
-    # rgb=vs.read()[1] # Opencv VideoCapture
+    rgb=vs.read()[1] # Opencv VideoCapture
     # rgb=cv2.UMat(vs.read()[1]) # OpenCV VideoCapture with Hardware Acceleration
-    rgb=image.array # PiCamera
+    # rgb=image.array # PiCamera
     # rgb=cv2.Umat(image.array) # PiCamera with Hardware Acceleration
     hsv=cv2.cvtColor(rgb, cv2.COLOR_BGR2HSV) # Create HSV frame
 
@@ -77,16 +77,16 @@ for image in camera.capture_continuous(raw_capture,format="bgr",use_video_port=T
 
     if ball_detected:
         print(ball_center)
-        # cv2.circle(rgb,ball_center,2,(0,255,0),2) # For debug, put a dot where we think ball is.
+        cv2.circle(rgb,ball_center,2,(0,255,0),2) # For debug, put a dot where we think ball is.
     else:
         print('not found')
         
     # raw_capture.truncate(0) # Discard used frame, necessary when using PiCamera
 
-    # # For debug, show frame.
-    # cv2.imshow('frame',rgb)
-    # key=cv2.waitKey(1) & 0xFF
-    # if key==ord('q'):
-    #     cv2.destroyAllWindows()
-    #     go=False
-    #     raise SystemExit
+    # For debug, show frame.
+    cv2.imshow('frame',rgb)
+    key=cv2.waitKey(1) & 0xFF
+    if key==ord('q'):
+        cv2.destroyAllWindows()
+        go=False
+        raise SystemExit

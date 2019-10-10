@@ -1,23 +1,19 @@
-#include "toggle.h"
 #include "tof.h"
 #include "gyro.h"
 
 int tof_shutdown_pins[] = {30, 31, 32, 33}; // Front, Left, Right, Back
-Toggle toggle = Toggle(24, 25);
-
-int state = 0; // Toggle switch state
+Tof tof = Tof(tof_shutdown_pins);
+Gyro gyro = Gyro();
 
 void update_all() {
-    state = toggle.getState();
     tof.update();
     gyro.update();
 }
 
 void setup() {
-    update_all();
     Serial.begin(115200);
-    gyro.init();
     tof.init();
+    gyro.init();
 }
 
 void loop() {
@@ -32,6 +28,5 @@ void loop() {
     Serial.write(tof.right);
 
     Serial.write("g");
-    Serial.write(gyro.heading);
-}
+    Serial.write((int) gyro.heading);
 }
