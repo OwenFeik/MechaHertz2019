@@ -18,15 +18,17 @@ void setup() {
 
 void loop() {
     update_all();
-    Serial.write("f");
-    Serial.write(tof.front);
-    Serial.write("l");
-    Serial.write(tof.left);
-    Serial.write("b");
-    Serial.write(tof.back);
-    Serial.write("r");
-    Serial.write(tof.right);
 
-    Serial.write("g");
+    Serial.write('s');
+    Serial.write(tof.front);
+    Serial.write('f');
+    Serial.write(tof.left);
+    Serial.write('l');
+    Serial.write(tof.right);
+    Serial.write('r');
+    Serial.write(tof.back);
+    Serial.write('b');
+
     Serial.write((int) gyro.heading);
+    Serial.write('g');
 }

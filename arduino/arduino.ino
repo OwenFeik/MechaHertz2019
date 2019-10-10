@@ -2,7 +2,7 @@
 #include "drive.h"
 #include "toggle.h"
 
-#define DEBUG false
+#define SLAVE_RESET 10 
 
 Toggle toggle = Toggle(24, 25);
 Pixy pixy = Pixy();
@@ -18,22 +18,18 @@ bool goalie_colour;
 bool goalie_attacking;
 bool goalie_returning;
 
-void update_all() {
-    pixy.update();
-    state = toggle.getState();
+int tof_front, tof_left, tof_right, tof_back;
+int heading;
 
-    #if DEBUG
-        tof.printDistances();
-        Serial.print("Switch: "); Serial.print(state);
-        Serial.print(" Pixy: "); Serial.print(pixy.x);
-        Serial.print(" Gyro: "); Serial.println(gyro.heading);
-    #endif
-}
+char ser_char_in;
+String ser_str_in;
+unsigned long last_slave_report = 0;
+bool restarting_slave = false;
+
 
 void setup() {
     
-    update_all();
-
+    // pixy.update();
     // if (state == 1) {
     //     if (pixy.y_visible) {
     //         goalie_colour = true;
@@ -44,22 +40,26 @@ void setup() {
     // } 
     // else if (state == 2) {
     
-    if (pixy.u_visible) {
-        goalie_colour = true;
-    }
-    else if (pixy.y_visible) {
-        goalie_colour = false;
-    }
+    // if (pixy.u_visible) {
+    //     goalie_colour = true;
+    // }
+    // else if (pixy.y_visible) {
+    //     goalie_colour = false;
+    // }
     // }
 
     Serial.begin(115200);
+
+    digitalWrite(SLAVE_RESET, HIGH);
+    pinMode(SLAVE_RESET, OUTPUT);
 }
 
 void loop() {
     update_all();
 
     // Switch forward -> attacker
-    if (state == 1 || goalie_attacking) {
+    // if (state == 1 || goalie_attacking) {
+    if (state == 1) {
     /*
         // if (pixy.visible && gyro.facingForward(45)) {
         //     panning = false;
@@ -329,4 +329,57 @@ void loop() {
         drive.stop();
     }
 }
-  
+
+void read_serial() {
+    while (Serial.available() > 0) {
+        ser_char_in = (char) Serial.read();
+
+        if (isDigit(ser_char_in)) {
+            ser_str_in += (char) ser_char_in;
+        }
+        else {
+            if (ser_char_in == 's') {
+                last_slave_report = millis();
+            }
+            else if (ser_char_in == 'f') {
+                tof_front = ser_str_in.toInt();
+            }
+            else if (ser_char_in == 'l') {
+                tof_left = ser_str_in.toInt();
+            }
+            else if (ser_char_in == 'r') {
+                tof_right = ser_str_in.toInt();
+            }
+            else if (ser_char_in == 'b') {
+                tof_back = ser_str_in.toInt();
+            }
+            else if (ser_char_in == 'g') {
+                heading = ser_str_in.toInt();
+            }
+
+            ser_str_in = "";
+        }
+    }
+}
+
+void handle_slave() {
+    read_serial();
+
+    if (restarting_slave) {
+        if (millis() - last_slave_report > 200) {
+            digitalWrite(SLAVE_RESET, HIGH);
+            restarting_slave = false;
+        }
+    }
+    else if (millis() - last_slave_report > 1000) {
+        digitalWrite(SLAVE_RESET, LOW);
+        last_slave_report = millis();
+        restarting_slave = true;
+    }
+}
+
+void update_all() {
+    handle_slave();
+    pixy.update();
+    state = toggle.getState();
+}
