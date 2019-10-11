@@ -191,10 +191,10 @@ void loop() {
                     drive.face(100, pixy.x);                    
                 }
                 else if (pixy.x <= 30) {
-                    drive.strafe(-100);
+                    drive.euclid(90, 100);
                 }
                 else if (pixy.x >= 70) {
-                    drive.strafe(100);                                                                                                                                      
+                    drive.strafe(270, 100);                                                                                                                                      
                 }
             }
         } // true -> opponent yellow
