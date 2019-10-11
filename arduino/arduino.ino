@@ -60,7 +60,7 @@ void loop() {
     // Switch forward -> attacker
     // if (state == 1 || goalie_attacking) {
     if (state == 1) {
-    /*
+    
         // if (pixy.visible && gyro.facingForward(45)) {
         //     panning = false;
 
@@ -122,18 +122,18 @@ void loop() {
                 //own goal
                 if (pixy.u_visible) {
                     if (pixy.u_x > 50) {
-                        drive.drive(60, 100, 0);
+                        drive.euclid(30, 100);
                     }
                     else {
-                        drive.drive(100, 60, 0);
+                        drive.euclid(-30, 100);
                     }
                 }
                 else {
                     if (pixy.y < 35 && pixy.y_visible) {
-                        drive.chase(100, (2 * pixy.y_x + pixy.x) / 3);
+                        drive.chase(100, (2 * pixy.y_x + pixy.x) / 3);)
                     }
                     else {
-                        drive.chase(100, pixy.x);                        
+                        drive.chase(100, pixy.x);
                     }
                 }
             }
@@ -170,11 +170,11 @@ void loop() {
         else {
             drive.turn(50);
         }
-    */
+    
     }
     // Switch back -> goalie
     else if (state == 2) {
-    /*
+    
         if (pixy.visible) {
             // if (goalie_attacking) {
             //     if (pixy.y < 70) {

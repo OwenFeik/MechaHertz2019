@@ -109,34 +109,34 @@ Chase the ball; move forward while turning to face it head on.
 speed: 0-100
 x: proportional x position of the ball (output from Pixy object)
 */
-/*
+
 void Drive::chase(int speed, float x) {
     if (x > 35 && x < 65) {
         go(speed);
     }
     else {
-        float multiplier = 0.7;
+        float offset = 0;
         if (x > 25 && x < 75) {
-            multiplier = 0.55;
+            offset = 20;
         }
         else if (x > 15 && x < 85) {
-            multiplier = 0.4;
+            offset = 10;
         }
         else {
             face(speed, x);
         }
 
         if (x < 50) {
-            drive(int(speed * multiplier), -speed, 0);
+            euclid(50 - offset, speed);
         }
         else {
-            drive(speed, -int(speed * multiplier), 0);
+            euclid(-50 + offset, speed);
         }
     }
 }
-*/
 
-/*
+
+
 void Drive::face(int speed, float x) {
     int _speed = abs(speed);
 
@@ -144,35 +144,35 @@ void Drive::face(int speed, float x) {
         stop();
     }
     else if (x < 50) {
-        float multiplier = 1;
+        float offset = 0;
         if (x > 40) {
-            multiplier = 0.25;
+            offset = 75;
         }
         else if (x > 30) {
-            multiplier = 0.5;
+            offset = 50;
         }
         else if (x > 20) {
-            multiplier = 0.7;
+            offset = 30;
         }
 
-        turn(int(multiplier * _speed * -1));
+        euclid(0, 0, 100 - offset);
     }
     else {
-        float multiplier = 1;
-        if (x < 60) {
-            multiplier = 0.25;
+        float offset = 0;
+        if (x > 60) {
+            offset = 75;
         }
-        else if (x < 70) {
-            multiplier = 0.5;
+        else if (x > 70) {
+            offset = 50;
         }
-        else if (x < 80) {
-            multiplier = 0.7;
+        else if (x > 80) {
+            offset = 30;
         }
 
-        turn(int(multiplier * _speed));
+        euclid(0, 0, -100 + offset);
     }
 }
-*/
+
 
 /*
 void Drive::forward(int speed, float heading) {
