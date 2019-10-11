@@ -10,9 +10,9 @@ class Drive {
     void go(int speed);
     void stop();
     
-    // void turn(int speed);
+    //void turn(int speed);
     // void strafe(int speed, float heading = 0);
-    // void chase(int speed, float x);
-    // void face(int speed, float x);
+    void chase(int speed, float x);
+    void face(int speed, float x);
     // void forward(int speed, float heading);
 };

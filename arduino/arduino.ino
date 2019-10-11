@@ -2,12 +2,14 @@
 #include "drive.h"
 #include "toggle.h"
 
-#define SLAVE_RESET 10 
+// #define SLAVE_RESET 10 
 
-Toggle toggle = Toggle(24, 25);
+Toggle toggle = Toggle(52, 53);
 Pixy pixy = Pixy();
-Drive drive = Drive(2, 3, 4, 5, 6, 7, 8, 9);
-
+// Drive drive = Drive(6, 7, 3, 2, 8, 9, 4, 5); //back right motor = (8, 9) // BOT RED WIRES
+                                            //back left motor = (4, 5)
+Drive drive = Drive(2, 3, 7, 6, 8, 9, 4, 5); // BOT BROWN WIRES
+                                            
 bool panning = false;
 bool panning_dir = false;
 int state = 0; // Toggle switch state
@@ -18,17 +20,16 @@ bool goalie_colour;
 bool goalie_attacking;
 bool goalie_returning;
 
-int tof_front, tof_left, tof_right, tof_back;
-int heading;
+// int tof_front, tof_left, tof_right, tof_back;
+// int heading;
 
-char ser_char_in;
-String ser_str_in;
-unsigned long last_slave_report = 0;
-bool restarting_slave = false;
+// char ser_char_in;
+// String ser_str_in;
+// unsigned long last_slave_report = 0;
+// bool restarting_slave = false;
 
 
 void setup() {
-    
     // pixy.update();
     // if (state == 1) {
     //     if (pixy.y_visible) {
@@ -50,8 +51,8 @@ void setup() {
 
     Serial.begin(115200);
 
-    digitalWrite(SLAVE_RESET, HIGH);
-    pinMode(SLAVE_RESET, OUTPUT);
+    // digitalWrite(SLAVE_RESET, HIGH);
+    // pinMode(SLAVE_RESET, OUTPUT);
 }
 
 void loop() {
@@ -130,7 +131,7 @@ void loop() {
                 }
                 else {
                     if (pixy.y < 35 && pixy.y_visible) {
-                        drive.chase(100, (2 * pixy.y_x + pixy.x) / 3);)
+                        drive.chase(100, (2 * pixy.y_x + pixy.x) / 3);
                     }
                     else {
                         drive.chase(100, pixy.x);
@@ -142,10 +143,10 @@ void loop() {
                 //own goal
                 if (pixy.y_visible) {
                     if (pixy.u_x > 50) {
-                        drive.drive(60, 100, 0);
+                        drive.euclid(60, 100, 0);
                     }
                     else {
-                        drive.drive(100, 60, 0);
+                        drive.euclid(100, 60, 0);
                     }
                     
                 }
@@ -161,14 +162,14 @@ void loop() {
         }
         else if (pixy.last_seen < 60) {
             if (pixy.x > 80) {
-                drive.turn(55);
+                drive.euclid(0, 0, 55);
             }
             else if (pixy.x < 20) {
-                drive.turn(-55);
+                drive.euclid(0, 0, -55);
             }
         }
         else {
-            drive.turn(50);
+            drive.euclid(0, 0, 50);
         }
     
     }
@@ -194,7 +195,7 @@ void loop() {
                     drive.euclid(90, 100);
                 }
                 else if (pixy.x >= 70) {
-                    drive.strafe(270, 100);                                                                                                                                      
+                    drive.euclid(270, 100);                                                                                                                                      
                 }
             }
         } // true -> opponent yellow
@@ -237,7 +238,7 @@ void loop() {
                 drive.face(100, pixy.y_x);
             }
             else {
-                drive.turn(50);
+                drive.euclid(0, 0, 50);
             }
         }
         else if (!goalie_colour) {
@@ -245,7 +246,7 @@ void loop() {
                 drive.face(100, pixy.u_x);
             }
             else {
-                drive.turn(-50);
+                drive.euclid(0, 0, -50);
             }
         }
 
@@ -322,8 +323,6 @@ void loop() {
         // else {
         //     panning = true;
         // }
-
-    */    
     }
     else {
         drive.stop();
