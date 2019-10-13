@@ -1,15 +1,16 @@
 #include "pixy.h"
 #include "drive.h"
 #include "toggle.h"
+#include "colour.h"
 
 // #define SLAVE_RESET 10 
 
 Toggle toggle = Toggle(52, 53);
 Pixy pixy = Pixy();
-// Drive drive = Drive(6, 7, 3, 2, 8, 9, 4, 5); //back right motor = (8, 9) // BOT RED WIRES
-                                            //back left motor = (4, 5)
-Drive drive = Drive(2, 3, 7, 6, 8, 9, 4, 5); // BOT BROWN WIRES
-                                            
+Drive drive = Drive(7, 6, 2, 3, 9, 8, 5, 4); // BOT RED WIRES (Tapey)
+// Drive drive = Drive(2, 3, 7, 6, 8, 9, 4, 5); // BOT BROWN WIRES (Tacky)
+Colour colour = Colour();
+                          
 bool panning = false;
 bool panning_dir = false;
 int state = 0; // Toggle switch state
@@ -19,6 +20,8 @@ bool attacker_colour;
 bool goalie_colour;
 bool goalie_attacking;
 bool goalie_returning;
+
+int c = 0;
 
 // int tof_front, tof_left, tof_right, tof_back;
 // int heading;
@@ -30,24 +33,14 @@ bool goalie_returning;
 
 
 void setup() {
-    // pixy.update();
-    // if (state == 1) {
-    //     if (pixy.y_visible) {
-    //         goalie_colour = true;
-    //     }
-    //     else if (pixy.u_visible) {
-    //         goalie_colour = false;
-    //     }
-    // } 
-    // else if (state == 2) {
-    
-    // if (pixy.u_visible) {
-    //     goalie_colour = true;
-    // }
-    // else if (pixy.y_visible) {
-    //     goalie_colour = false;
-    // }
-    // }
+    update_all();
+
+    if (pixy.u_visible) {
+        goalie_colour = true;
+    }
+    else if (pixy.y_visible) {
+        goalie_colour = false;
+    }
 
     Serial.begin(115200);
 
@@ -59,62 +52,12 @@ void loop() {
     update_all();
 
     // Switch forward -> attacker
-    // if (state == 1 || goalie_attacking) {
-    if (state == 1) {
-    
-        // if (pixy.visible && gyro.facingForward(45)) {
-        //     panning = false;
-
-        //     if (pixy.y < 50 || (pixy.x > 40 && pixy.x < 60)) {
-        //         drive.chase(100, pixy.x);
-        //     }
-        //     else {
-        //         if (pixy.x > 50) {
-        //             drive.strafe(100, gyro.heading);
-        //         }
-        //         else {
-        //             drive.strafe(-100, gyro.heading);
-        //         }
-        //     }
-        // }
-        // else if (pixy.last_seen < 50 && gyro.facingForward(45)) {
-        //     panning = false;
-
-        //     if (pixy.x < 50) {
-        //         drive.turn(-80);
-        //     }
-        //     else if (pixy.x > 50) {
-        //         drive.turn(80);
-        //     }
-        // }
-        // else if (gyro.facingForward(20)) {
-        //     if (tof.left > 400) {
-        //         drive.strafe(-100, gyro.heading);
-        //     }
-        //     else if (tof.back > 500) {
-        //         drive.go(-100);
-        //     }
-        //     else {
-        //         panning = true;
-        //     }
-        // }
-        // else if (panning) {
-        //     if (!(gyro.heading < 335 && gyro.heading > 295)) {
-        //         if (gyro.heading < 295 && gyro.heading > 135) {
-        //             drive.turn(-80);
-        //         }
-        //         else {
-        //             drive.turn(80);
-        //         }
-        //     }
-        // }
-        // else {
-        //     drive.forward(100, gyro.heading);
-        // }
-        
-        // if (pixy.visible) {
-        //     drive.go(100);
-        // }
+    if (state == 1 || goalie_attacking) {
+        if (c == 1) {
+            drive.euclid(180, 80);
+            delay(300);
+            return;
+        }
 
         // Old (working) chase implementation
         if (pixy.visible) {
@@ -162,10 +105,10 @@ void loop() {
         }
         else if (pixy.last_seen < 60) {
             if (pixy.x > 80) {
-                drive.euclid(0, 0, 55);
+                drive.euclid(0, 0, -55);
             }
             else if (pixy.x < 20) {
-                drive.euclid(0, 0, -55);
+                drive.euclid(0, 0, 55);
             }
         }
         else {
@@ -175,7 +118,12 @@ void loop() {
     }
     // Switch back -> goalie
     else if (state == 2) {
-    
+        if (c == 1) {
+            drive.euclid(180, 80);
+            delay(300);
+            update_all();
+        }
+
         if (pixy.visible) {
             // if (goalie_attacking) {
             //     if (pixy.y < 70) {
@@ -198,41 +146,7 @@ void loop() {
                     drive.euclid(270, 100);                                                                                                                                      
                 }
             }
-        } // true -> opponent yellow
-        // else if (goalie_returning) {
-        //     if (goalie_colour) {
-        //         if (pixy.y_visible) {
-        //             if (pixy.y_y > 30) {
-        //                 drive.chase(100, pixy.y_x);
-        //             }
-        //             else {
-        //                 goalie_returning = false;
-        //             }
-        //         }
-        //         else {
-        //             drive.turn(80);
-        //         }
-        //     }
-        //     else {
-        //         if (pixy.u_visible) {
-        //             if (pixy.u_y > 30) {
-        //                 drive.chase(100, pixy.u_x);
-        //             }
-        //             else {
-        //                 goalie_returning = false;
-        //             }
-        //         }
-        //         else {
-        //             drive.turn(-80);
-        //         }
-        //     }
-        // }
-        // else if (!pixy.visible) {
-        //     if (goalie_attacking) {
-        //         goalie_attacking = false;
-        //         goalie_returning = true;
-        //     }
-        // }
+        }
         else if (goalie_colour) {
             if (pixy.y_visible) {
                 drive.face(100, pixy.y_x);
@@ -250,135 +164,63 @@ void loop() {
             }
         }
 
-
-
-
-        // panning = false;
-        // if (tof.back > 800) {
-        //     if (gyro.facingForward(30)) {
-        //         drive.go(-100);                    
-        //     }
-        //     else {
-        //         drive.forward(100, gyro.heading);
-        //     }
-
-        //     // panning = false;
-        // }
-        // else if (pixy.visible) {
-        //     if (pixy.y <= 30 && pixy.x > 30 && pixy.x < 70) {
-        //         drive.chase(100, pixy.x);
-        //     }
-        //     else {
-        //         drive.face(100, pixy.x);
-        //     }
-
-        //     // panning = false;
-        // }
-        // else if (tof.back > 300) {
-        //     if (gyro.facingForward(30)) {
-        //         drive.go(-80);
-        //     }
-        //     else {
-        //         drive.forward(100, gyro.heading);
-        //     }
-
-        //     // panning = false;
-        // }
-        // else if (pixy.last_seen < 50) {
-        //     if (pixy.x < 50) {
-        //         drive.turn(-80);
-        //     }
-        //     else if (pixy.x > 50) {
-        //         drive.turn(80);
-        //     }
-
-        //     // panning = false;
-        // }
-        // else if (!panning && !gyro.facingForward(30)) {
-        //     drive.forward(100, gyro.heading);
-        // }
-        // else if (!panning && tof.off_center) {
-        //     if (tof.left > tof.right) {
-        //         drive.strafe(80, gyro.heading);
-        //     }
-        //     else if (tof.right > tof.left) {
-        //         drive.strafe(-80, gyro.heading);
-        //     }
-        // }
-        // else if (panning) {
-        //     if (gyro.heading > 180 && gyro.heading < 300) {
-        //         panning_dir = true;
-        //     }
-        //     else if (gyro.heading < 180 && gyro.heading > 60) {
-        //         panning_dir = false;
-        //     }
-
-        //     if (panning_dir) {
-        //         drive.turn(-50);
-        //     }
-        //     else {
-        //         drive.turn(50);
-        //     }
-        // }
-        // else {
-        //     panning = true;
-        // }
     }
     else {
         drive.stop();
     }
 }
 
-void read_serial() {
-    while (Serial.available() > 0) {
-        ser_char_in = (char) Serial.read();
+// void read_serial() {
+//     while (Serial.available() > 0) {
+//         ser_char_in = (char) Serial.read();
 
-        if (isDigit(ser_char_in)) {
-            ser_str_in += (char) ser_char_in;
-        }
-        else {
-            if (ser_char_in == 's') {
-                last_slave_report = millis();
-            }
-            else if (ser_char_in == 'f') {
-                tof_front = ser_str_in.toInt();
-            }
-            else if (ser_char_in == 'l') {
-                tof_left = ser_str_in.toInt();
-            }
-            else if (ser_char_in == 'r') {
-                tof_right = ser_str_in.toInt();
-            }
-            else if (ser_char_in == 'b') {
-                tof_back = ser_str_in.toInt();
-            }
-            else if (ser_char_in == 'g') {
-                heading = ser_str_in.toInt();
-            }
+//         if (isDigit(ser_char_in)) {
+//             ser_str_in += (char) ser_char_in;
+//         }
+//         else {
+//             if (ser_char_in == 's') {
+//                 last_slave_report = millis();
+//             }
+//             else if (ser_char_in == 'f') {
+//                 tof_front = ser_str_in.toInt();
+//             }
+//             else if (ser_char_in == 'l') {
+//                 tof_left = ser_str_in.toInt();
+//             }
+//             else if (ser_char_in == 'r') {
+//                 tof_right = ser_str_in.toInt();
+//             }
+//             else if (ser_char_in == 'b') {
+//                 tof_back = ser_str_in.toInt();
+//             }
+//             else if (ser_char_in == 'g') {
+//                 heading = ser_str_in.toInt();
+//             }
 
-            ser_str_in = "";
-        }
-    }
-}
+//             ser_str_in = "";
+//         }
+//     }
+// }
 
-void handle_slave() {
-    read_serial();
+// void handle_slave() {
+//     read_serial();
 
-    if (restarting_slave) {
-        if (millis() - last_slave_report > 200) {
-            digitalWrite(SLAVE_RESET, HIGH);
-            restarting_slave = false;
-        }
-    }
-    else if (millis() - last_slave_report > 1000) {
-        digitalWrite(SLAVE_RESET, LOW);
-        last_slave_report = millis();
-        restarting_slave = true;
-    }
-}
+//     if (restarting_slave) {
+//         if (millis() - last_slave_report > 200) {
+//             digitalWrite(SLAVE_RESET, HIGH);
+//             restarting_slave = false;
+//         }
+//     }
+//     else if (millis() - last_slave_report > 1000) {
+//         digitalWrite(SLAVE_RESET, LOW);
+//         last_slave_report = millis();
+//         restarting_slave = true;
+//     }
+// }
 
 void update_all() {
-    handle_slave();
+    // handle_slave();
     pixy.update();
+    c = colour.getColour();
     state = toggle.getState();
 }

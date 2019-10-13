@@ -5,9 +5,9 @@ class Colour {
     public:
         Adafruit_TCS34725 sensor;
         float red, green, blue;
-        int g_r_min = 0, g_r_max = 20, g_g_min = 260, g_g_max = 280, g_b_min = 175, g_b_max = 195;
-        int w_r_min, w_r_max, w_g_min, w_g_max, w_b_min, w_b_max;
-        int b_r_min, b_r_max, b_g_min, b_g_max, b_b_min, b_b_max; 
+        int g_r_min = 75, g_r_max = 95, g_g_min = 95, g_g_max = 115, g_b_min = 50, g_b_max = 60;
+        int w_r_min = 80, w_r_max = 90, w_g_min = 80, w_g_max = 90, w_b_min = 65, w_b_max = 80;
+        int b_r_min = 105, b_r_max = 115, b_g_min = 70, b_g_max = 85, b_b_min = 55, b_b_max = 65; 
 
     Colour();
     void update();

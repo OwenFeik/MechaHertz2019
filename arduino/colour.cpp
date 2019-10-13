@@ -15,13 +15,37 @@ void Colour::update() {
 int Colour::getColour() {
     update();
 
-    if (g_r_min < red && g_r_max > red && g_b_min < green && g_g_max > green && g_g_min < blue && g_b_max > blue) {
+    //G: 80, 107, 56
+    //G: 85, 103, 55
+    //G: 76, 108, 56
+    //G: 87, 102, 54
+    //G: 92, 100, 54
+    //G: 87, 103, 55
+    //G: 86, 103, 55
+
+    //GL: 74, 109, 57
+    //
+
+    //W: 83, 87, 73
+    //W: 83, 87, 73
+    //W: 84, 88, 73
+    //W: 86, 87, 71
+    //W: 83, 87, 73
+
+    //B: 111, 78, 61
+    //B: 114, 79, 59
+    //B: 112, 82, 60
+    //B: 113, 76, 60
+    //B: 116, 77, 58
+    //B: 112, 80, 62
+
+    if (g_r_min < red && g_r_max > red && g_g_min < green && g_g_max > green && g_b_min < blue && g_b_max > blue) {
         return 0;
     }
-    else if (w_r_min < red && w_r_max > red && w_b_min < green && w_g_max > green && w_g_min < blue && w_b_max > blue) {
+    else if (w_r_min < red && w_r_max > red && w_g_min < green && w_g_max > green && w_b_min < blue && w_b_max > blue) {
         return 1;
     }
-    else if (b_r_min < red && b_r_max > red && b_b_min < green && b_g_max > green && b_g_min < blue && b_b_max > blue) {
+    else if (b_r_min < red && b_r_max > red && b_g_min < green && b_g_max > green && b_b_min < blue && b_b_max > blue) {
         return 2;
     }
     else {
