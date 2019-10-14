@@ -3,6 +3,36 @@
 #include "toggle.h"
 #include "colour.h"
 
+/*
+    Initial approach to nationals code was to adapt across the code from states
+    in order to use 4 motors, as well as a sensor slave to prevent the stalling
+    caused by time of flight sensors.
+
+    This entailed updating the drive library to allow for the new, matrixe based
+    approach to motor driving, as well as the addition of serial code to this file.
+    
+    The performance of this code was acceptable; the out-on-white detection worked
+    excellently, however the core game loop, as ever, could use optimisation. The 
+    primary weakness of our robots for this competition was, of course, the lack of
+    a 360* camera, meaning our bots had to wheel about and track the ball. This
+    increased the chance of scoring own goals, which some own goal avoidance code
+    reduced but couldn't eliminate, in addition to reducing the bots' effectiveness
+    as a whole.
+
+    In terms of hardware, the most reliable pieces were the Pixy2 and Adafruit_TCS34725
+    colour sensor, both of which worked reliably and exceptionally. The points of 
+    weakness in this regard were primarily the motors; not only are they slower
+    than more expensive models, they additionally suffer from frequent stalling.
+
+    In terms of design, our 4-wheeled robot suffered from issues experienced last
+    year, but clearly unresolved; because of minor differences in wheel height, the
+    robot would occasionally fail to place all four wheels on the ground, and thus
+    get stuck in place. The use of jumper wires for the connection of sensors as
+    opposed to PCBs also represented both an additional difficulty with assembly
+    and an ongoing (minor) issue during games as wires would occasionally become unplugged.
+*/
+
+
 // #define SLAVE_RESET 10 
 
 Toggle toggle = Toggle(52, 53);
@@ -22,6 +52,8 @@ bool goalie_attacking;
 bool goalie_returning;
 
 int c = 0;
+
+// Not in use because uno doesn't work.
 
 // int tof_front, tof_left, tof_right, tof_back;
 // int heading;
@@ -53,6 +85,7 @@ void loop() {
 
     // Switch forward -> attacker
     if (state == 1 || goalie_attacking) {
+        // Edge detection: If we're about to go out, drive backward.
         if (c == 1) {
             drive.euclid(180, 80);
             delay(300);
@@ -125,11 +158,6 @@ void loop() {
         }
 
         if (pixy.visible) {
-            // if (goalie_attacking) {
-            //     if (pixy.y < 70) {
-            //         drive.chase(100, pixy.x);
-            //     }
-            // }
             if (pixy.y <= 60) {
                 drive.chase(100, pixy.x);
                 goalie_attacking = true;
@@ -169,6 +197,14 @@ void loop() {
         drive.stop();
     }
 }
+
+/*
+    Serial communication wasn't used because it turned out that Arduino Unos lack the RAM 
+    to run the time of flight and gyro sensors. We instead made do without the use of these
+    sensors, relying initially on the camera alone, and adding between games a colour sensor
+    to perform white-line detection.
+*/
+
 
 // void read_serial() {
 //     while (Serial.available() > 0) {
