@@ -115,15 +115,12 @@ void Drive::chase(int speed, float x) {
         go(speed);
     }
     else {
-        float offset = 0;
+        int offset = 0;
         if (x > 25 && x < 75) {
             offset = 20;
         }
         else if (x > 15 && x < 85) {
             offset = 10;
-        }
-        else {
-            face(speed, x);
         }
 
         if (x < 50) {
@@ -144,29 +141,29 @@ void Drive::face(int speed, float x) {
         stop();
     }
     else if (x < 50) {
-        float offset = 0;
+        int offset = 0;
         if (x > 40) {
-            offset = 75;
-        }
-        else if (x > 30) {
             offset = 50;
         }
+        else if (x > 30) {
+            offset = 25;
+        }
         else if (x > 20) {
-            offset = 30;
+            offset = 10;
         }
 
         euclid(0, 0, 100 - offset);
     }
     else {
-        float offset = 0;
+        int offset = 0;
         if (x > 60) {
-            offset = 75;
-        }
-        else if (x > 70) {
             offset = 50;
         }
+        else if (x > 70) {
+            offset = 25;
+        }
         else if (x > 80) {
-            offset = 30;
+            offset = 10;
         }
 
         euclid(0, 0, -100 + offset);
