@@ -23,10 +23,8 @@ Serial communication wasn't used because it turned out that Arduino Unos lack th
 
 Open arduino/arduino.ino and change the pin numbers in the driver declarations at the top of the file.
 
-* Toggle
-	Accepts two pins, the two pins which the toggle-switch is connected to. Remember to ground the switch in addition.
-* Drive
-	Accepts 8 pins, two for each motor. The order is Front Right, Front Left, Back Right, Back Left. You'll have to play around to figure out which way around they go (i.e. 1, 2 vs 2, 1)
+* Toggle accepts two pins, the two pins which the toggle-switch is connected to. Remember to ground the switch in addition.
+* Drive accepts 8 pins, two for each motor. The order is Front Right, Front Left, Back Right, Back Left. You'll have to play around to figure out which way around they go (i.e. 1, 2 vs 2, 1)
 
 If you want to use the sensor slave set up, which is a good idea in theory, but hasn't been tested in practice, also edit the following values, and uncomment the functions ```read_serial()``` and ```handle_slave()``` alongside the call to ```handle_slave()``` at the bottom of arduino.ino. Note that both the slave and master will need to be run on an Arduino Mega: the Arduino Uno has insufficient RAM.
 
